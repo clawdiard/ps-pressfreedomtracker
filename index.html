@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Press Freedom Tracker — Global Dashboard</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📰</text></svg>">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a0f;--surface:#12121a;--surface2:#1a1a26;--border:#2a2a3a;--text:#e8e8f0;--muted:#8888aa;--accent:#c9a84c;--danger:#e63946;--warning:#f4a261;--safe:#2a9d8f;--blue:#4361ee}
+body{font-family:'Georgia','Times New Roman',serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none}
+
+/* Header */
+header{background:linear-gradient(180deg,#14141e 0%,var(--bg) 100%);border-bottom:1px solid var(--border);padding:2rem 2rem 1.5rem}
+header h1{font-size:2.2rem;font-weight:400;letter-spacing:0.04em;color:var(--text)}
+header h1 span{color:var(--accent)}
+.subtitle{font-size:0.95rem;color:var(--muted);margin-top:0.3rem;font-style:italic}
+.live-dot{display:inline-block;width:8px;height:8px;background:var(--danger);border-radius:50%;margin-right:8px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+
+/* Stats bar */
+.stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;padding:1.5rem 2rem;border-bottom:1px solid var(--border)}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.2rem;text-align:center}
+.stat-card .number{font-size:2.4rem;font-weight:700;font-family:'Courier New',monospace}
+.stat-card .label{font-size:0.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-top:0.3rem}
+.stat-card.danger .number{color:var(--danger)}
+.stat-card.warning .number{color:var(--warning)}
+.stat-card.safe .number{color:var(--safe)}
+.stat-card.blue .number{color:var(--blue)}
+
+/* Layout */
+.main-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;min-height:70vh}
+@media(max-width:900px){.main-grid{grid-template-columns:1fr}}
+
+/* Map */
+#map{height:100%;min-height:500px;background:var(--surface)}
+.leaflet-container{background:var(--surface)!important}
+.leaflet-tile-pane{filter:brightness(0.6) saturate(0.3) contrast(1.2)}
+
+/* Sidebar */
+.sidebar{background:var(--surface);border-left:1px solid var(--border);overflow-y:auto;max-height:80vh}
+.sidebar-header{padding:1.2rem 1.5rem;border-bottom:1px solid var(--border);font-size:1.1rem;font-weight:600;display:flex;align-items:center;justify-content:space-between}
+.filter-tabs{display:flex;gap:0.5rem;padding:0.8rem 1.5rem;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.filter-tab{padding:0.3rem 0.8rem;border-radius:4px;font-size:0.75rem;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:inherit;transition:all 0.2s}
+.filter-tab:hover,.filter-tab.active{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+
+.incident-list{padding:0}
+.incident{padding:1rem 1.5rem;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.2s}
+.incident:hover{background:var(--surface2)}
+.incident-date{font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em}
+.incident-title{font-size:0.95rem;margin:0.3rem 0;line-height:1.4}
+.incident-meta{font-size:0.8rem;color:var(--muted)}
+.incident-type{display:inline-block;padding:0.15rem 0.5rem;border-radius:3px;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.05em;margin-right:0.5rem}
+.type-detention{background:rgba(230,57,70,0.2);color:var(--danger)}
+.type-killing{background:rgba(230,57,70,0.4);color:#ff6b6b}
+.type-censorship{background:rgba(244,162,97,0.2);color:var(--warning)}
+.type-shutdown{background:rgba(67,97,238,0.2);color:var(--blue)}
+.type-legal{background:rgba(136,136,170,0.2);color:var(--muted)}
+
+/* Freedom Index Section */
+.freedom-section{border-top:1px solid var(--border);padding:2rem}
+.freedom-section h2{font-size:1.4rem;font-weight:400;margin-bottom:1.5rem;letter-spacing:0.03em}
+.country-rankings{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
+.country-row{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:1rem 1.2rem;display:flex;align-items:center;gap:1rem}
+.country-rank{font-size:1.4rem;font-weight:700;font-family:'Courier New',monospace;color:var(--muted);min-width:2rem;text-align:right}
+.country-info{flex:1}
+.country-name{font-size:0.95rem;font-weight:600}
+.country-score{font-size:0.8rem;color:var(--muted);margin-top:0.2rem}
+.score-bar{height:4px;background:var(--border);border-radius:2px;margin-top:0.4rem;overflow:hidden}
+.score-fill{height:100%;border-radius:2px;transition:width 0.8s ease}
+
+/* Timeline */
+.timeline-section{border-top:1px solid var(--border);padding:2rem}
+.timeline-section h2{font-size:1.4rem;font-weight:400;margin-bottom:1.5rem}
+.year-chart{display:flex;align-items:flex-end;gap:2px;height:120px;padding:0 0 1.5rem}
+.year-bar{flex:1;background:var(--danger);border-radius:2px 2px 0 0;position:relative;min-width:12px;transition:height 0.5s ease;cursor:pointer}
+.year-bar:hover{opacity:0.8}
+.year-bar .year-label{position:absolute;bottom:-1.5rem;left:50%;transform:translateX(-50%);font-size:0.65rem;color:var(--muted);white-space:nowrap}
+.year-bar .bar-value{position:absolute;top:-1.2rem;left:50%;transform:translateX(-50%);font-size:0.65rem;color:var(--text);white-space:nowrap;opacity:0}
+.year-bar:hover .bar-value{opacity:1}
+
+/* Footer */
+footer{border-top:1px solid var(--border);padding:1.5rem 2rem;text-align:center;color:var(--muted);font-size:0.8rem;font-style:italic}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+/* Custom map markers */
+.custom-marker{border-radius:50%;border:2px solid rgba(255,255,255,0.3);box-shadow:0 0 10px rgba(230,57,70,0.5)}
+</style>
+</head>
+<body>
+
+<header>
+  <h1><span>Press Freedom</span> Tracker</h1>
+  <div class="subtitle"><span class="live-dot"></span>Global Dashboard — Journalist Detentions, Outlet Shutdowns & Censorship Incidents</div>
+</header>
+
+<div class="stats-bar" id="statsBar"></div>
+
+<div class="main-grid">
+  <div id="map"></div>
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <span>Recent Incidents</span>
+      <span style="font-size:0.75rem;color:var(--muted)" id="incidentCount"></span>
+    </div>
+    <div class="filter-tabs" id="filterTabs">
+      <button class="filter-tab active" data-filter="all">All</button>
+      <button class="filter-tab" data-filter="detention">Detentions</button>
+      <button class="filter-tab" data-filter="killing">Killings</button>
+      <button class="filter-tab" data-filter="censorship">Censorship</button>
+      <button class="filter-tab" data-filter="shutdown">Shutdowns</button>
+      <button class="filter-tab" data-filter="legal">Legal Threats</button>
+    </div>
+    <div class="incident-list" id="incidentList"></div>
+  </div>
+</div>
+
+<div class="timeline-section">
+  <h2>Journalist Detentions by Year</h2>
+  <div class="year-chart" id="yearChart"></div>
+</div>
+
+<div class="freedom-section">
+  <h2>World Press Freedom Index — Bottom 20</h2>
+  <div class="country-rankings" id="worstRankings"></div>
+</div>
+
+<div class="freedom-section">
+  <h2>World Press Freedom Index — Top 10</h2>
+  <div class="country-rankings" id="bestRankings"></div>
+</div>
+
+<footer>
+  Data compiled from RSF, CPJ, and public records. Dashboard for informational purposes.
+</footer>
+
+<script>
+// ========== DATA ==========
+const incidents = [
+  {date:"2026-02-20",title:"Independent news site blocked across three provinces",country:"China",lat:35.86,lng:104.19,type:"censorship",detail:"Authorities ordered ISPs to block access to FactWire China in Guangdong, Fujian, and Zhejiang."},
+  {date:"2026-02-18",title:"Two journalists detained covering protest in Minsk",country:"Belarus",lat:53.9,lng:27.57,type:"detention",detail:"BelaPAN reporters arrested while livestreaming anti-government demonstration."},
+  {date:"2026-02-17",title:"Press accreditation revoked for foreign correspondents",country:"Russia",lat:55.75,lng:37.62,type:"censorship",detail:"Five western news bureau correspondents given 72 hours to leave the country."},
+  {date:"2026-02-15",title:"Newspaper editor sentenced to 7 years",country:"Egypt",lat:30.04,lng:31.24,type:"detention",detail:"Editor of Al-Manassa convicted on terrorism-related charges widely criticized as politically motivated."},
+  {date:"2026-02-14",title:"Internet shutdown during election",country:"Chad",lat:12.13,lng:15.05,type:"shutdown",detail:"Nationwide internet blackout imposed for 48 hours around parliamentary elections."},
+  {date:"2026-02-12",title:"Photojournalist killed in crossfire",country:"Myanmar",lat:19.76,lng:96.07,type:"killing",detail:"Freelance photographer killed while documenting resistance activity in Sagaing Region."},
+  {date:"2026-02-11",title:"Defamation lawsuit against investigative outlet",country:"Turkey",lat:39.93,lng:32.86,type:"legal",detail:"Government-linked company files $2M defamation suit against Medyascope over corruption reporting."},
+  {date:"2026-02-10",title:"Radio station license revoked",country:"Nicaragua",lat:12.15,lng:-86.27,type:"shutdown",detail:"Radio Darío's broadcast license cancelled after coverage of opposition activities."},
+  {date:"2026-02-09",title:"Three bloggers arrested for 'fake news'",country:"Vietnam",lat:21.03,lng:105.85,type:"detention",detail:"Independent bloggers detained under Article 331 for social media posts critical of local officials."},
+  {date:"2026-02-08",title:"Documentary filmmaker held without charge",country:"Iran",lat:35.69,lng:51.39,type:"detention",detail:"Award-winning director detained at Tehran airport, no formal charges announced."},
+  {date:"2026-02-06",title:"WhatsApp and Telegram restricted",country:"Ethiopia",lat:9.02,lng:38.75,type:"shutdown",detail:"Messaging platforms throttled in Amhara region amid security operations."},
+  {date:"2026-02-05",title:"Journalist's home raided by police",country:"India",lat:28.61,lng:77.21,type:"legal",detail:"Newslaundry reporter's residence searched under sedition law after investigating mining corruption."},
+  {date:"2026-02-04",title:"News website DDoS attacked after investigation",country:"Philippines",lat:14.6,lng:120.98,type:"censorship",detail:"Rappler successor site hit with sustained cyberattack after publishing government procurement exposé."},
+  {date:"2026-02-02",title:"Reporter missing for 30+ days",country:"Mexico",lat:19.43,lng:-99.13,type:"killing",detail:"Regional crime reporter last seen January 2; authorities have not opened formal investigation."},
+  {date:"2026-02-01",title:"Foreign journalist visa ban expanded",country:"Eritrea",lat:15.34,lng:38.93,type:"censorship",detail:"All foreign media requests denied; country enters 24th year without independent domestic press."},
+  {date:"2026-01-30",title:"TV station stormed by security forces",country:"Afghanistan",lat:34.53,lng:69.17,type:"shutdown",detail:"Ariana News studio equipment confiscated after broadcasting women's education segment."},
+  {date:"2026-01-28",title:"Columnist sentenced under digital security act",country:"Bangladesh",lat:23.81,lng:90.41,type:"detention",detail:"Prothom Alo contributor receives 3-year sentence for Facebook criticism of energy policy."},
+  {date:"2026-01-25",title:"Newspaper printing press seized",country:"Venezuela",lat:10.49,lng:-66.88,type:"shutdown",detail:"El Nacional's replacement printing equipment confiscated at customs on government orders."},
+  {date:"2026-01-22",title:"Freelancer detained at border crossing",country:"Saudi Arabia",lat:24.71,lng:46.68,type:"detention",detail:"Saudi-American journalist held at King Fahd Causeway returning from Bahrain reporting trip."},
+  {date:"2026-01-20",title:"Social media law criminalizes 'harmful content'",country:"Tanzania",lat:-6.79,lng:39.28,type:"legal",detail:"New legislation imposes up to 5 years imprisonment for publishing 'misleading information' online."},
+  {date:"2026-01-18",title:"Two cameramen shot covering demonstration",country:"Sudan",lat:15.5,lng:32.56,type:"killing",detail:"Al Jazeera crew members injured by live ammunition while filming pro-democracy march in Khartoum."},
+  {date:"2026-01-15",title:"Entire editorial board placed under travel ban",country:"Hong Kong",lat:22.32,lng:114.17,type:"legal",detail:"Stand News successor outlet's 6 editors barred from leaving territory under national security law."},
+  {date:"2026-01-12",title:"Community radio journalists abducted",country:"Somalia",lat:2.05,lng:45.32,type:"killing",detail:"Two Radio Mogadishu stringers taken by armed group; bodies found three days later."},
+  {date:"2026-01-10",title:"VPN crackdown intensifies ahead of congress",country:"China",lat:39.9,lng:116.41,type:"censorship",detail:"Major VPN providers blocked; journalists report inability to access international sources."},
+  {date:"2026-01-05",title:"Investigative reporter charged with espionage",country:"Russia",lat:55.75,lng:37.62,type:"detention",detail:"Wall Street Journal stringer faces renewed espionage charges after appeal denied."}
+];
+
+const detentionsByYear = [
+  {year:2015,count:199},{year:2016,count:259},{year:2017,count:262},{year:2018,count:348},
+  {year:2019,count:389},{year:2020,count:387},{year:2021,count:488},{year:2022,count:533},
+  {year:2023,count:521},{year:2024,count:510},{year:2025,count:498}
+];
+
+const worstCountries = [
+  {rank:180,name:"Eritrea",score:13.81},{rank:179,name:"North Korea",score:14.20},
+  {rank:178,name:"Afghanistan",score:17.84},{rank:177,name:"Iran",score:19.62},
+  {rank:176,name:"Syria",score:20.15},{rank:175,name:"China",score:22.97},
+  {rank:174,name:"Turkmenistan",score:23.02},{rank:173,name:"Myanmar",score:23.44},
+  {rank:172,name:"Vietnam",score:24.58},{rank:171,name:"Cuba",score:25.30},
+  {rank:170,name:"Iraq",score:26.01},{rank:169,name:"Belarus",score:26.53},
+  {rank:168,name:"Russia",score:27.20},{rank:167,name:"Laos",score:27.85},
+  {rank:166,name:"Saudi Arabia",score:28.44},{rank:165,name:"Bahrain",score:29.10},
+  {rank:164,name:"Yemen",score:29.88},{rank:163,name:"Egypt",score:30.15},
+  {rank:162,name:"Somalia",score:30.72},{rank:161,name:"Djibouti",score:31.40}
+];
+
+const bestCountries = [
+  {rank:1,name:"Norway",score:95.18},{rank:2,name:"Denmark",score:92.65},
+  {rank:3,name:"Sweden",score:91.58},{rank:4,name:"Netherlands",score:90.82},
+  {rank:5,name:"Finland",score:90.25},{rank:6,name:"Ireland",score:89.91},
+  {rank:7,name:"Portugal",score:88.17},{rank:8,name:"Lithuania",score:87.40},
+  {rank:9,name:"Estonia",score:86.95},{rank:10,name:"New Zealand",score:86.42}
+];
+
+// ========== RENDER ==========
+// Stats
+const totalDetained = incidents.filter(i=>i.type==='detention').length;
+const totalKilled = incidents.filter(i=>i.type==='killing').length;
+const totalShutdowns = incidents.filter(i=>i.type==='shutdown').length;
+const countriesAffected = [...new Set(incidents.map(i=>i.country))].length;
+
+document.getElementById('statsBar').innerHTML = `
+  <div class="stat-card danger"><div class="number">${totalDetained}</div><div class="label">Journalists Detained</div></div>
+  <div class="stat-card warning"><div class="number">${totalKilled}</div><div class="label">Killed / Missing</div></div>
+  <div class="stat-card blue"><div class="number">${totalShutdowns}</div><div class="label">Outlet Shutdowns</div></div>
+  <div class="stat-card safe"><div class="number">${countriesAffected}</div><div class="label">Countries Affected</div></div>
+`;
+
+// Map
+const map = L.map('map',{zoomControl:false,attributionControl:false}).setView([25,20],2);
+L.control.zoom({position:'bottomleft'}).addTo(map);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{maxZoom:18}).addTo(map);
+
+const typeColors = {detention:'#e63946',killing:'#ff4444',censorship:'#f4a261',shutdown:'#4361ee',legal:'#8888aa'};
+const markers = [];
+
+incidents.forEach(inc => {
+  const color = typeColors[inc.type]||'#888';
+  const marker = L.circleMarker([inc.lat,inc.lng],{radius:7,fillColor:color,color:'rgba(255,255,255,0.3)',weight:1,fillOpacity:0.85}).addTo(map);
+  marker.bindPopup(`<div style="font-family:Georgia;max-width:250px"><strong>${inc.title}</strong><br><small style="color:#666">${inc.country} — ${inc.date}</small><br><br>${inc.detail}</div>`);
+  markers.push({marker,incident:inc});
+});
+
+// Incident list
+let currentFilter = 'all';
+function renderIncidents(filter){
+  currentFilter = filter;
+  const filtered = filter==='all' ? incidents : incidents.filter(i=>i.type===filter);
+  document.getElementById('incidentCount').textContent = `${filtered.length} incidents`;
+  document.getElementById('incidentList').innerHTML = filtered.map((inc,i) => `
+    <div class="incident" data-idx="${i}" onclick="flyTo(${inc.lat},${inc.lng})">
+      <div class="incident-date">${inc.date}</div>
+      <div class="incident-title">
+        <span class="incident-type type-${inc.type}">${inc.type}</span>
+        ${inc.title}
+      </div>
+      <div class="incident-meta">${inc.country}</div>
+    </div>
+  `).join('');
+}
+renderIncidents('all');
+
+function flyTo(lat,lng){map.flyTo([lat,lng],5,{duration:1})}
+
+// Filter tabs
+document.querySelectorAll('.filter-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.filter-tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    renderIncidents(tab.dataset.filter);
+  });
+});
+
+// Year chart
+const maxCount = Math.max(...detentionsByYear.map(d=>d.count));
+document.getElementById('yearChart').innerHTML = detentionsByYear.map(d => {
+  const h = (d.count/maxCount)*100;
+  return `<div class="year-bar" style="height:${h}%"><span class="year-label">${d.year}</span><span class="bar-value">${d.count}</span></div>`;
+}).join('');
+
+// Rankings
+function renderRankings(data, containerId, colorFn){
+  document.getElementById(containerId).innerHTML = data.map(c => {
+    const pct = c.score;
+    const color = colorFn(c.score);
+    return `<div class="country-row">
+      <div class="country-rank">#${c.rank}</div>
+      <div class="country-info">
+        <div class="country-name">${c.name}</div>
+        <div class="country-score">Score: ${c.score}/100</div>
+        <div class="score-bar"><div class="score-fill" style="width:${pct}%;background:${color}"></div></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+renderRankings(worstCountries,'worstRankings', s => s<20?'#e63946':s<25?'#f4a261':s<30?'#f4a261':'#e9c46a');
+renderRankings(bestCountries,'bestRankings', s => s>90?'#2a9d8f':s>87?'#52b788':'#76c893');
+</script>
+</body>
+</html>
