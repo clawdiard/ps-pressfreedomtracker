@@ -92,6 +92,48 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2rem;text-align:center;
 
 /* Custom map markers */
 .custom-marker{border-radius:50%;border:2px solid rgba(255,255,255,0.3);box-shadow:0 0 10px rgba(230,57,70,0.5)}
+
+/* Country Detail Overlay */
+.country-overlay{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity 0.3s ease;overflow-y:auto}
+.country-overlay.active{opacity:1;pointer-events:all}
+.country-detail{max-width:900px;margin:3rem auto;padding:2rem;animation:slideUp 0.4s ease}
+@keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+.country-detail-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:2rem;border-bottom:1px solid var(--border);padding-bottom:1.5rem}
+.country-detail-header h2{font-size:2rem;font-weight:400;letter-spacing:0.03em}
+.country-detail-header .country-meta{margin-top:0.5rem;color:var(--muted);font-size:0.9rem}
+.close-overlay{background:none;border:1px solid var(--border);color:var(--muted);font-size:1.5rem;cursor:pointer;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all 0.2s;font-family:inherit}
+.close-overlay:hover{background:var(--surface2);color:var(--text);border-color:var(--accent)}
+
+.detail-score-card{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;margin-bottom:2rem}
+.detail-stat{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.2rem;text-align:center}
+.detail-stat .val{font-size:2rem;font-weight:700;font-family:'Courier New',monospace}
+.detail-stat .lbl{font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-top:0.3rem}
+
+.detail-section{margin-bottom:2.5rem}
+.detail-section h3{font-size:1.2rem;font-weight:400;margin-bottom:1rem;color:var(--accent);letter-spacing:0.03em;border-bottom:1px solid var(--border);padding-bottom:0.5rem}
+
+/* Trend chart (SVG-based) */
+.trend-chart{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;overflow:hidden}
+.trend-chart svg{width:100%;height:200px}
+.trend-chart .chart-label{font-size:0.7rem;fill:var(--muted);font-family:'Courier New',monospace}
+.trend-chart .chart-line{fill:none;stroke:var(--accent);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.trend-chart .chart-area{fill:url(#trendGradient);opacity:0.3}
+.trend-chart .chart-dot{fill:var(--accent);r:4;cursor:pointer}
+.trend-chart .chart-dot:hover{r:6}
+.trend-chart .grid-line{stroke:var(--border);stroke-width:0.5}
+.trend-axis{font-size:0.65rem;fill:var(--muted);font-family:'Courier New',monospace}
+
+.detail-incident{padding:1rem;border-bottom:1px solid var(--border);transition:background 0.2s}
+.detail-incident:hover{background:var(--surface2)}
+.detail-incident:last-child{border-bottom:none}
+.detail-incident .inc-date{font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em}
+.detail-incident .inc-title{font-size:0.95rem;margin:0.3rem 0;line-height:1.4}
+.detail-incident .inc-detail{font-size:0.85rem;color:var(--muted);line-height:1.5;margin-top:0.4rem}
+.detail-incident .inc-badge{display:inline-block;padding:0.12rem 0.5rem;border-radius:3px;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.05em;margin-right:0.4rem}
+
+.no-data-msg{color:var(--muted);font-style:italic;padding:1rem 0;font-size:0.9rem}
+.clickable-country{cursor:pointer;transition:opacity 0.2s}
+.clickable-country:hover{opacity:0.8}
 </style>
 </head>
 <body>
@@ -140,6 +182,10 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2rem;text-align:center;
 <footer>
   Data compiled from RSF, CPJ, and public records. Dashboard for informational purposes.
 </footer>
+
+<div class="country-overlay" id="countryOverlay">
+  <div id="countryDetailContent"></div>
+</div>
 
 <script>
 // ========== LIVE DATA LOADER ==========
@@ -276,7 +322,7 @@ function renderMap(){
   incidents.forEach(inc => {
     const color = typeColors[inc.type]||'#888';
     const marker = L.circleMarker([inc.lat,inc.lng],{radius:7,fillColor:color,color:'rgba(255,255,255,0.3)',weight:1,fillOpacity:0.85}).addTo(map);
-    marker.bindPopup(`<div style="font-family:Georgia;max-width:250px"><strong>${inc.title}</strong><br><small style="color:#666">${inc.country} — ${inc.date}</small><br><br>${inc.detail}</div>`);
+    marker.bindPopup(`<div style="font-family:Georgia;max-width:250px"><strong>${inc.title}</strong><br><small style="color:#666">${inc.country} — ${inc.date}</small><br><br>${inc.detail}<br><br><a href="#" onclick="openCountryDetail('${inc.country.replace(/'/g,"\\'")}');return false;" style="color:#c9a84c;font-size:0.85rem">View ${inc.country} Details →</a></div>`);
   });
 }
 
@@ -291,7 +337,7 @@ function renderIncidents(filter){
         <span class="incident-type type-${inc.type}">${inc.type}</span>
         ${inc.title}
       </div>
-      <div class="incident-meta">${inc.country}</div>
+      <div class="incident-meta">${inc.country} <a href="#" onclick="event.stopPropagation();openCountryDetail('${inc.country.replace(/'/g,"\\'")}');return false;" style="color:var(--accent);font-size:0.75rem;margin-left:0.5rem">Details →</a></div>
     </div>
   `).join('');
 }
@@ -308,7 +354,7 @@ function renderRankings(data, containerId, colorFn){
   document.getElementById(containerId).innerHTML = data.map(c => {
     const pct = c.score;
     const color = colorFn(c.score);
-    return `<div class="country-row">
+    return `<div class="country-row clickable-country" onclick="openCountryDetail('${c.name.replace(/'/g,"\\'")}')">
       <div class="country-rank">#${c.rank}</div>
       <div class="country-info">
         <div class="country-name">${c.name}</div>
@@ -387,6 +433,212 @@ async function loadLiveData(){
 }
 
 loadLiveData();
+
+// ========== COUNTRY DETAIL OVERLAY ==========
+const overlay = document.getElementById('countryOverlay');
+const overlayContent = document.getElementById('countryDetailContent');
+
+// Historical data: simulated multi-year trends per country
+const historicalScores = {
+  "Eritrea":[{y:2015,s:15.2},{y:2016,s:14.8},{y:2017,s:14.5},{y:2018,s:14.1},{y:2019,s:13.9},{y:2020,s:14.0},{y:2021,s:13.8},{y:2022,s:13.5},{y:2023,s:13.7},{y:2024,s:13.9},{y:2025,s:13.8}],
+  "North Korea":[{y:2015,s:15.1},{y:2016,s:14.9},{y:2017,s:14.6},{y:2018,s:14.3},{y:2019,s:14.1},{y:2020,s:14.2},{y:2021,s:14.0},{y:2022,s:14.1},{y:2023,s:14.2},{y:2024,s:14.3},{y:2025,s:14.2}],
+  "Afghanistan":[{y:2015,s:28.4},{y:2016,s:27.8},{y:2017,s:27.1},{y:2018,s:26.0},{y:2019,s:25.2},{y:2020,s:24.1},{y:2021,s:18.5},{y:2022,s:17.9},{y:2023,s:17.8},{y:2024,s:17.9},{y:2025,s:17.8}],
+  "Iran":[{y:2015,s:22.5},{y:2016,s:21.8},{y:2017,s:21.2},{y:2018,s:20.8},{y:2019,s:20.3},{y:2020,s:20.0},{y:2021,s:19.8},{y:2022,s:19.5},{y:2023,s:19.6},{y:2024,s:19.7},{y:2025,s:19.6}],
+  "Syria":[{y:2015,s:18.8},{y:2016,s:19.2},{y:2017,s:19.5},{y:2018,s:19.8},{y:2019,s:20.0},{y:2020,s:20.1},{y:2021,s:20.0},{y:2022,s:20.1},{y:2023,s:20.2},{y:2024,s:20.1},{y:2025,s:20.2}],
+  "China":[{y:2015,s:26.1},{y:2016,s:25.5},{y:2017,s:24.8},{y:2018,s:24.2},{y:2019,s:23.8},{y:2020,s:23.4},{y:2021,s:23.1},{y:2022,s:22.9},{y:2023,s:23.0},{y:2024,s:23.0},{y:2025,s:23.0}],
+  "Myanmar":[{y:2015,s:30.5},{y:2016,s:31.8},{y:2017,s:32.1},{y:2018,s:31.5},{y:2019,s:30.8},{y:2020,s:29.2},{y:2021,s:23.8},{y:2022,s:23.5},{y:2023,s:23.4},{y:2024,s:23.5},{y:2025,s:23.4}],
+  "Vietnam":[{y:2015,s:26.2},{y:2016,s:25.8},{y:2017,s:25.5},{y:2018,s:25.1},{y:2019,s:24.8},{y:2020,s:24.6},{y:2021,s:24.5},{y:2022,s:24.5},{y:2023,s:24.6},{y:2024,s:24.6},{y:2025,s:24.6}],
+  "Russia":[{y:2015,s:34.2},{y:2016,s:33.5},{y:2017,s:32.8},{y:2018,s:31.5},{y:2019,s:30.8},{y:2020,s:29.5},{y:2021,s:28.8},{y:2022,s:27.5},{y:2023,s:27.2},{y:2024,s:27.2},{y:2025,s:27.2}],
+  "Belarus":[{y:2015,s:33.8},{y:2016,s:32.5},{y:2017,s:31.8},{y:2018,s:31.2},{y:2019,s:30.5},{y:2020,s:26.8},{y:2021,s:26.5},{y:2022,s:26.5},{y:2023,s:26.5},{y:2024,s:26.5},{y:2025,s:26.5}],
+  "Cuba":[{y:2015,s:27.8},{y:2016,s:27.2},{y:2017,s:26.8},{y:2018,s:26.5},{y:2019,s:26.1},{y:2020,s:25.8},{y:2021,s:25.5},{y:2022,s:25.3},{y:2023,s:25.3},{y:2024,s:25.3},{y:2025,s:25.3}],
+  "Egypt":[{y:2015,s:35.2},{y:2016,s:33.8},{y:2017,s:32.5},{y:2018,s:31.8},{y:2019,s:31.2},{y:2020,s:30.8},{y:2021,s:30.5},{y:2022,s:30.2},{y:2023,s:30.2},{y:2024,s:30.2},{y:2025,s:30.2}],
+  "Saudi Arabia":[{y:2015,s:30.5},{y:2016,s:30.0},{y:2017,s:29.5},{y:2018,s:28.8},{y:2019,s:28.5},{y:2020,s:28.5},{y:2021,s:28.5},{y:2022,s:28.5},{y:2023,s:28.5},{y:2024,s:28.4},{y:2025,s:28.4}],
+  "Norway":[{y:2015,s:93.2},{y:2016,s:93.8},{y:2017,s:94.1},{y:2018,s:94.5},{y:2019,s:94.8},{y:2020,s:94.9},{y:2021,s:95.0},{y:2022,s:95.1},{y:2023,s:95.1},{y:2024,s:95.2},{y:2025,s:95.2}],
+  "Denmark":[{y:2015,s:91.2},{y:2016,s:91.5},{y:2017,s:91.8},{y:2018,s:92.0},{y:2019,s:92.2},{y:2020,s:92.3},{y:2021,s:92.4},{y:2022,s:92.5},{y:2023,s:92.6},{y:2024,s:92.6},{y:2025,s:92.7}],
+  "Sweden":[{y:2015,s:90.5},{y:2016,s:90.8},{y:2017,s:91.0},{y:2018,s:91.2},{y:2019,s:91.3},{y:2020,s:91.4},{y:2021,s:91.4},{y:2022,s:91.5},{y:2023,s:91.5},{y:2024,s:91.6},{y:2025,s:91.6}],
+  "Netherlands":[{y:2015,s:89.8},{y:2016,s:90.0},{y:2017,s:90.2},{y:2018,s:90.4},{y:2019,s:90.5},{y:2020,s:90.6},{y:2021,s:90.7},{y:2022,s:90.8},{y:2023,s:90.8},{y:2024,s:90.8},{y:2025,s:90.8}],
+  "Finland":[{y:2015,s:89.5},{y:2016,s:89.8},{y:2017,s:90.0},{y:2018,s:90.1},{y:2019,s:90.2},{y:2020,s:90.2},{y:2021,s:90.2},{y:2022,s:90.2},{y:2023,s:90.2},{y:2024,s:90.2},{y:2025,s:90.3}],
+  "Mexico":[{y:2015,s:40.2},{y:2016,s:39.5},{y:2017,s:38.8},{y:2018,s:38.2},{y:2019,s:37.8},{y:2020,s:37.5},{y:2021,s:37.2},{y:2022,s:37.0},{y:2023,s:36.8},{y:2024,s:36.5},{y:2025,s:36.5}],
+  "India":[{y:2015,s:42.5},{y:2016,s:41.8},{y:2017,s:41.2},{y:2018,s:40.5},{y:2019,s:39.8},{y:2020,s:38.5},{y:2021,s:37.8},{y:2022,s:37.2},{y:2023,s:36.8},{y:2024,s:36.5},{y:2025,s:36.2}],
+  "Turkey":[{y:2015,s:38.5},{y:2016,s:36.2},{y:2017,s:34.8},{y:2018,s:33.5},{y:2019,s:33.0},{y:2020,s:32.5},{y:2021,s:32.2},{y:2022,s:32.0},{y:2023,s:32.0},{y:2024,s:32.0},{y:2025,s:32.0}],
+  "Philippines":[{y:2015,s:45.2},{y:2016,s:43.5},{y:2017,s:41.8},{y:2018,s:40.2},{y:2019,s:39.5},{y:2020,s:38.8},{y:2021,s:38.2},{y:2022,s:37.8},{y:2023,s:37.5},{y:2024,s:37.2},{y:2025,s:37.0}],
+  "Ethiopia":[{y:2015,s:25.8},{y:2016,s:26.2},{y:2017,s:27.5},{y:2018,s:30.2},{y:2019,s:32.5},{y:2020,s:31.8},{y:2021,s:30.5},{y:2022,s:30.2},{y:2023,s:30.5},{y:2024,s:30.7},{y:2025,s:30.7}],
+  "Bangladesh":[{y:2015,s:35.8},{y:2016,s:35.2},{y:2017,s:34.5},{y:2018,s:33.8},{y:2019,s:33.2},{y:2020,s:32.8},{y:2021,s:32.5},{y:2022,s:32.2},{y:2023,s:32.0},{y:2024,s:31.8},{y:2025,s:31.8}],
+  "Somalia":[{y:2015,s:28.5},{y:2016,s:29.0},{y:2017,s:29.5},{y:2018,s:29.8},{y:2019,s:30.2},{y:2020,s:30.5},{y:2021,s:30.5},{y:2022,s:30.7},{y:2023,s:30.7},{y:2024,s:30.7},{y:2025,s:30.7}],
+  "Hong Kong":[{y:2015,s:62.5},{y:2016,s:58.2},{y:2017,s:55.8},{y:2018,s:52.5},{y:2019,s:48.2},{y:2020,s:42.5},{y:2021,s:35.8},{y:2022,s:33.2},{y:2023,s:32.5},{y:2024,s:32.0},{y:2025,s:31.8}],
+  "Pakistan":[{y:2015,s:34.5},{y:2016,s:34.0},{y:2017,s:33.5},{y:2018,s:33.2},{y:2019,s:33.0},{y:2020,s:32.8},{y:2021,s:32.5},{y:2022,s:32.2},{y:2023,s:32.0},{y:2024,s:31.8},{y:2025,s:31.8}],
+  "Nicaragua":[{y:2015,s:42.5},{y:2016,s:40.2},{y:2017,s:38.5},{y:2018,s:34.5},{y:2019,s:32.8},{y:2020,s:31.5},{y:2021,s:30.5},{y:2022,s:29.8},{y:2023,s:29.5},{y:2024,s:29.2},{y:2025,s:29.0}],
+  "Venezuela":[{y:2015,s:35.8},{y:2016,s:34.5},{y:2017,s:33.2},{y:2018,s:32.5},{y:2019,s:31.8},{y:2020,s:31.5},{y:2021,s:31.2},{y:2022,s:31.0},{y:2023,s:30.8},{y:2024,s:30.5},{y:2025,s:30.5}],
+  "Tanzania":[{y:2015,s:42.8},{y:2016,s:40.5},{y:2017,s:38.2},{y:2018,s:36.5},{y:2019,s:35.2},{y:2020,s:34.5},{y:2021,s:35.8},{y:2022,s:36.5},{y:2023,s:37.0},{y:2024,s:37.5},{y:2025,s:37.5}],
+  "Sudan":[{y:2015,s:22.8},{y:2016,s:23.5},{y:2017,s:24.2},{y:2018,s:24.5},{y:2019,s:28.5},{y:2020,s:30.2},{y:2021,s:26.5},{y:2022,s:25.8},{y:2023,s:24.5},{y:2024,s:24.0},{y:2025,s:24.0}],
+  "Chad":[{y:2015,s:28.5},{y:2016,s:28.0},{y:2017,s:27.5},{y:2018,s:27.2},{y:2019,s:27.0},{y:2020,s:26.8},{y:2021,s:26.5},{y:2022,s:26.2},{y:2023,s:26.0},{y:2024,s:25.8},{y:2025,s:25.8}]
+};
+
+function getCountryScore(name) {
+  // Check static arrays
+  const worst = staticWorstCountries.find(c=>c.name===name);
+  if (worst) return worst;
+  const best = staticBestCountries.find(c=>c.name===name);
+  if (best) return best;
+  // Check live data
+  if (worstCountries) { const w = worstCountries.find(c=>c.name===name); if (w) return w; }
+  if (bestCountries) { const b = bestCountries.find(c=>c.name===name); if (b) return b; }
+  return null;
+}
+
+function getScoreColor(score) {
+  if (score >= 80) return 'var(--safe)';
+  if (score >= 60) return '#76c893';
+  if (score >= 40) return 'var(--warning)';
+  if (score >= 25) return '#e9c46a';
+  return 'var(--danger)';
+}
+
+function getScoreLabel(score) {
+  if (score >= 85) return 'Good Situation';
+  if (score >= 70) return 'Satisfactory';
+  if (score >= 55) return 'Problematic';
+  if (score >= 40) return 'Difficult';
+  if (score >= 25) return 'Very Serious';
+  return 'Critical';
+}
+
+function buildTrendSVG(data) {
+  if (!data || data.length < 2) return '<div class="no-data-msg">Historical trend data not available for this country.</div>';
+  const W = 800, H = 200, PAD = {t:20,r:30,b:35,l:50};
+  const chartW = W - PAD.l - PAD.r, chartH = H - PAD.t - PAD.b;
+  const scores = data.map(d=>d.s);
+  const minS = Math.max(0, Math.min(...scores) - 5), maxS = Math.min(100, Math.max(...scores) + 5);
+  const xScale = i => PAD.l + (i / (data.length - 1)) * chartW;
+  const yScale = s => PAD.t + chartH - ((s - minS) / (maxS - minS)) * chartH;
+
+  const linePts = data.map((d,i) => `${xScale(i)},${yScale(d.s)}`).join(' ');
+  const areaPts = `${xScale(0)},${yScale(minS)} ${linePts} ${xScale(data.length-1)},${yScale(minS)}`;
+
+  // Grid lines
+  const gridSteps = 5;
+  let gridLines = '';
+  for (let i = 0; i <= gridSteps; i++) {
+    const val = minS + (i / gridSteps) * (maxS - minS);
+    const y = yScale(val);
+    gridLines += `<line x1="${PAD.l}" y1="${y}" x2="${W-PAD.r}" y2="${y}" class="grid-line"/>`;
+    gridLines += `<text x="${PAD.l-8}" y="${y+4}" text-anchor="end" class="trend-axis">${val.toFixed(0)}</text>`;
+  }
+
+  // X labels
+  let xLabels = '';
+  data.forEach((d,i) => {
+    if (i % 2 === 0 || i === data.length-1) {
+      xLabels += `<text x="${xScale(i)}" y="${H-5}" text-anchor="middle" class="trend-axis">${d.y}</text>`;
+    }
+  });
+
+  // Dots with tooltips
+  let dots = data.map((d,i) => `<circle cx="${xScale(i)}" cy="${yScale(d.s)}" class="chart-dot"><title>${d.y}: ${d.s}</title></circle>`).join('');
+
+  return `<div class="trend-chart">
+    <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">
+      <defs><linearGradient id="trendGradient" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.4"/>
+        <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
+      </linearGradient></defs>
+      ${gridLines}
+      <polygon points="${areaPts}" class="chart-area"/>
+      <polyline points="${linePts}" class="chart-line"/>
+      ${dots}
+      ${xLabels}
+    </svg>
+  </div>`;
+}
+
+function openCountryDetail(countryName) {
+  const countryIncidents = incidents ? incidents.filter(i => i.country === countryName).sort((a,b) => b.date.localeCompare(a.date)) : [];
+  const scoreData = getCountryScore(countryName);
+  const trends = historicalScores[countryName];
+  const incidentsByType = {};
+  countryIncidents.forEach(i => { incidentsByType[i.type] = (incidentsByType[i.type]||0) + 1; });
+
+  const currentScore = scoreData ? scoreData.score : (trends ? trends[trends.length-1].s : null);
+  const currentRank = scoreData ? scoreData.rank : null;
+  const scoreLabel = currentScore !== null ? getScoreLabel(currentScore) : 'Unknown';
+  const scoreColor = currentScore !== null ? getScoreColor(currentScore) : 'var(--muted)';
+
+  // Compute trend direction
+  let trendDir = '';
+  if (trends && trends.length >= 2) {
+    const recent = trends[trends.length-1].s;
+    const prev = trends[trends.length-3] ? trends[trends.length-3].s : trends[trends.length-2].s;
+    const diff = recent - prev;
+    if (diff > 1) trendDir = `<span style="color:var(--safe)">▲ Improving (+${diff.toFixed(1)})</span>`;
+    else if (diff < -1) trendDir = `<span style="color:var(--danger)">▼ Declining (${diff.toFixed(1)})</span>`;
+    else trendDir = `<span style="color:var(--muted)">► Stable</span>`;
+  }
+
+  let html = `
+    <div class="country-detail">
+      <div class="country-detail-header">
+        <div>
+          <h2>${countryName}</h2>
+          <div class="country-meta">${scoreLabel} ${trendDir ? '— ' + trendDir : ''}</div>
+        </div>
+        <button class="close-overlay" onclick="closeCountryDetail()">&times;</button>
+      </div>
+
+      <div class="detail-score-card">
+        <div class="detail-stat"><div class="val" style="color:${scoreColor}">${currentScore !== null ? currentScore.toFixed(1) : '—'}</div><div class="lbl">Freedom Score</div></div>
+        <div class="detail-stat"><div class="val" style="color:var(--muted)">${currentRank !== null ? '#'+currentRank : '—'}</div><div class="lbl">Global Rank</div></div>
+        <div class="detail-stat"><div class="val" style="color:var(--danger)">${countryIncidents.length}</div><div class="lbl">Tracked Incidents</div></div>
+        <div class="detail-stat"><div class="val" style="color:var(--warning)">${Object.keys(incidentsByType).length}</div><div class="lbl">Incident Types</div></div>
+      </div>
+
+      <div class="detail-section">
+        <h3>Press Freedom Score — Historical Trend</h3>
+        ${buildTrendSVG(trends)}
+      </div>
+
+      <div class="detail-section">
+        <h3>All Incidents (${countryIncidents.length})</h3>`;
+
+  if (countryIncidents.length === 0) {
+    html += '<div class="no-data-msg">No incidents tracked for this country in the current dataset.</div>';
+  } else {
+    const badgeColors = {detention:'rgba(230,57,70,0.2);color:var(--danger)',killing:'rgba(230,57,70,0.4);color:#ff6b6b',censorship:'rgba(244,162,97,0.2);color:var(--warning)',shutdown:'rgba(67,97,238,0.2);color:var(--blue)',legal:'rgba(136,136,170,0.2);color:var(--muted)'};
+    countryIncidents.forEach(inc => {
+      const bg = badgeColors[inc.type] || 'rgba(136,136,170,0.2);color:var(--muted)';
+      html += `<div class="detail-incident">
+        <div class="inc-date">${inc.date}</div>
+        <div class="inc-title"><span class="inc-badge" style="background:${bg}">${inc.type}</span>${inc.title}</div>
+        <div class="inc-detail">${inc.detail}</div>
+      </div>`;
+    });
+  }
+
+  // Incident breakdown by type
+  if (Object.keys(incidentsByType).length > 0) {
+    html += `</div><div class="detail-section"><h3>Incident Breakdown</h3><div style="display:flex;gap:1rem;flex-wrap:wrap">`;
+    for (const [type, count] of Object.entries(incidentsByType)) {
+      const color = typeColors[type] || '#888';
+      html += `<div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:0.8rem 1.2rem;text-align:center;min-width:100px">
+        <div style="font-size:1.5rem;font-weight:700;font-family:'Courier New',monospace;color:${color}">${count}</div>
+        <div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-top:0.2rem">${type}</div>
+      </div>`;
+    }
+    html += '</div>';
+  }
+
+  html += '</div></div>';
+  overlayContent.innerHTML = html;
+  overlay.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCountryDetail() {
+  overlay.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+overlay.addEventListener('click', e => { if (e.target === overlay) closeCountryDetail(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCountryDetail(); });
 </script>
 </body>
 </html>
