@@ -85,6 +85,24 @@ header h1 span{color:var(--accent)}
 /* Footer */
 footer{border-top:1px solid var(--border);padding:1.5rem 2rem;text-align:center;color:var(--muted);font-size:0.8rem;font-style:italic}
 
+/* Search & Filter Bar */
+.search-bar{padding:0.8rem 1.5rem;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:0.6rem}
+.search-input{width:100%;padding:0.6rem 0.8rem;background:var(--surface2);border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:inherit;font-size:0.85rem;outline:none;transition:border-color 0.2s}
+.search-input:focus{border-color:var(--accent)}
+.search-input::placeholder{color:var(--muted)}
+.date-range{display:flex;gap:0.5rem;align-items:center}
+.date-range label{font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;white-space:nowrap}
+.date-range input[type="date"]{flex:1;padding:0.4rem 0.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:inherit;font-size:0.75rem;outline:none}
+.date-range input[type="date"]:focus{border-color:var(--accent)}
+.date-range input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(0.7)}
+.export-bar{display:flex;gap:0.5rem;padding:0.6rem 1.5rem;border-bottom:1px solid var(--border)}
+.export-btn{padding:0.35rem 0.7rem;border-radius:4px;font-size:0.7rem;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:inherit;transition:all 0.2s;text-transform:uppercase;letter-spacing:0.05em}
+.export-btn:hover{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.search-clear{background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem;padding:0 0.3rem;position:absolute;right:0.6rem;top:50%;transform:translateY(-50%)}
+.search-clear:hover{color:var(--text)}
+.search-wrapper{position:relative}
+.result-count{font-size:0.7rem;color:var(--muted);padding:0 1.5rem 0.5rem}
+
 /* Scrollbar */
 ::-webkit-scrollbar{width:6px}
 ::-webkit-scrollbar-track{background:var(--bg)}
@@ -152,6 +170,18 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2rem;text-align:center;
       <span>Recent Incidents</span>
       <span style="font-size:0.75rem;color:var(--muted)" id="incidentCount"></span>
     </div>
+    <div class="search-bar">
+      <div class="search-wrapper">
+        <input type="text" class="search-input" id="searchInput" placeholder="Search incidents, countries, details…">
+        <button class="search-clear" id="searchClear" style="display:none">&times;</button>
+      </div>
+      <div class="date-range">
+        <label>From</label>
+        <input type="date" id="dateFrom">
+        <label>To</label>
+        <input type="date" id="dateTo">
+      </div>
+    </div>
     <div class="filter-tabs" id="filterTabs">
       <button class="filter-tab active" data-filter="all">All</button>
       <button class="filter-tab" data-filter="detention">Detentions</button>
@@ -160,6 +190,12 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2rem;text-align:center;
       <button class="filter-tab" data-filter="shutdown">Shutdowns</button>
       <button class="filter-tab" data-filter="legal">Legal Threats</button>
     </div>
+    <div class="export-bar">
+      <button class="export-btn" id="exportCSV">📄 Export CSV</button>
+      <button class="export-btn" id="exportPDF">📋 Export PDF</button>
+      <button class="export-btn" id="clearFilters">✕ Clear Filters</button>
+    </div>
+    <div class="result-count" id="resultCount"></div>
     <div class="incident-list" id="incidentList"></div>
   </div>
 </div>
@@ -639,6 +675,146 @@ function closeCountryDetail() {
 
 overlay.addEventListener('click', e => { if (e.target === overlay) closeCountryDetail(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCountryDetail(); });
+
+// ========== SEARCH, DATE FILTER & EXPORT ==========
+const searchInput = document.getElementById('searchInput');
+const searchClear = document.getElementById('searchClear');
+const dateFrom = document.getElementById('dateFrom');
+const dateTo = document.getElementById('dateTo');
+const resultCount = document.getElementById('resultCount');
+
+function getFilteredIncidents() {
+  let filtered = incidents || [];
+  // Type filter
+  if (currentFilter !== 'all') filtered = filtered.filter(i => i.type === currentFilter);
+  // Search query
+  const query = (searchInput.value || '').trim().toLowerCase();
+  if (query) {
+    filtered = filtered.filter(i =>
+      i.title.toLowerCase().includes(query) ||
+      i.country.toLowerCase().includes(query) ||
+      (i.detail || '').toLowerCase().includes(query) ||
+      i.type.toLowerCase().includes(query) ||
+      i.date.includes(query)
+    );
+  }
+  // Date range
+  const from = dateFrom.value;
+  const to = dateTo.value;
+  if (from) filtered = filtered.filter(i => i.date >= from);
+  if (to) filtered = filtered.filter(i => i.date <= to);
+  return filtered;
+}
+
+function renderFilteredIncidents() {
+  const filtered = getFilteredIncidents();
+  const total = incidents ? (currentFilter === 'all' ? incidents.length : incidents.filter(i => i.type === currentFilter).length) : 0;
+  document.getElementById('incidentCount').textContent = `${filtered.length} incidents`;
+  resultCount.textContent = filtered.length < total ? `Showing ${filtered.length} of ${total} incidents` : '';
+  searchClear.style.display = searchInput.value ? 'block' : 'none';
+
+  document.getElementById('incidentList').innerHTML = filtered.length === 0
+    ? '<div style="padding:2rem 1.5rem;color:var(--muted);font-style:italic;text-align:center">No incidents match your search criteria.</div>'
+    : filtered.map((inc, i) => `
+    <div class="incident" data-idx="${i}" onclick="flyTo(${inc.lat},${inc.lng})">
+      <div class="incident-date">${inc.date}</div>
+      <div class="incident-title">
+        <span class="incident-type type-${inc.type}">${inc.type}</span>
+        ${highlightMatch(inc.title)}
+      </div>
+      <div class="incident-meta">${inc.country} <a href="#" onclick="event.stopPropagation();openCountryDetail('${inc.country.replace(/'/g,"\\'")}');return false;" style="color:var(--accent);font-size:0.75rem;margin-left:0.5rem">Details →</a></div>
+    </div>
+  `).join('');
+}
+
+function highlightMatch(text) {
+  const query = (searchInput.value || '').trim();
+  if (!query) return text;
+  const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
+  return text.replace(regex, '<mark style="background:var(--accent);color:var(--bg);padding:0 2px;border-radius:2px">$1</mark>');
+}
+
+// Override renderIncidents to use filtered version
+const _origRenderIncidents = renderIncidents;
+renderIncidents = function(filter) {
+  currentFilter = filter;
+  renderFilteredIncidents();
+};
+
+searchInput.addEventListener('input', renderFilteredIncidents);
+dateFrom.addEventListener('change', renderFilteredIncidents);
+dateTo.addEventListener('change', renderFilteredIncidents);
+searchClear.addEventListener('click', () => { searchInput.value = ''; renderFilteredIncidents(); searchInput.focus(); });
+
+document.getElementById('clearFilters').addEventListener('click', () => {
+  searchInput.value = '';
+  dateFrom.value = '';
+  dateTo.value = '';
+  currentFilter = 'all';
+  document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector('.filter-tab[data-filter="all"]').classList.add('active');
+  renderFilteredIncidents();
+});
+
+// ========== CSV EXPORT ==========
+document.getElementById('exportCSV').addEventListener('click', () => {
+  const filtered = getFilteredIncidents();
+  if (filtered.length === 0) return;
+  const escape = s => '"' + (s||'').replace(/"/g,'""') + '"';
+  const header = 'Date,Country,Type,Title,Details,Latitude,Longitude';
+  const rows = filtered.map(i => [escape(i.date),escape(i.country),escape(i.type),escape(i.title),escape(i.detail),i.lat,i.lng].join(','));
+  const csv = [header, ...rows].join('\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `press-freedom-incidents-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click(); URL.revokeObjectURL(url);
+});
+
+// ========== PDF EXPORT ==========
+document.getElementById('exportPDF').addEventListener('click', () => {
+  const filtered = getFilteredIncidents();
+  if (filtered.length === 0) return;
+  const typeEmoji = {detention:'🔒',killing:'💀',censorship:'🚫',shutdown:'📡',legal:'⚖️'};
+  const filterInfo = [];
+  if (currentFilter !== 'all') filterInfo.push('Type: ' + currentFilter);
+  if (searchInput.value.trim()) filterInfo.push('Search: "' + searchInput.value.trim() + '"');
+  if (dateFrom.value) filterInfo.push('From: ' + dateFrom.value);
+  if (dateTo.value) filterInfo.push('To: ' + dateTo.value);
+
+  // Build printable HTML
+  const printHTML = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Press Freedom Tracker — Export</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Georgia,'Times New Roman',serif;color:#111;padding:2rem;max-width:800px;margin:0 auto}
+h1{font-size:1.6rem;font-weight:400;margin-bottom:0.3rem}
+.meta{color:#666;font-size:0.85rem;margin-bottom:1.5rem;font-style:italic}
+.filters{color:#888;font-size:0.8rem;margin-bottom:1rem;padding:0.5rem;background:#f5f5f5;border-radius:4px}
+table{width:100%;border-collapse:collapse;font-size:0.8rem;margin-top:1rem}
+th{background:#222;color:#fff;text-align:left;padding:0.5rem 0.6rem;font-weight:600;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.05em}
+td{padding:0.5rem 0.6rem;border-bottom:1px solid #ddd;vertical-align:top}
+tr:nth-child(even){background:#f9f9f9}
+.type-badge{display:inline-block;padding:0.1rem 0.4rem;border-radius:3px;font-size:0.65rem;text-transform:uppercase}
+.detention{background:#fce4ec;color:#c62828}.killing{background:#ffebee;color:#b71c1c}
+.censorship{background:#fff3e0;color:#e65100}.shutdown{background:#e3f2fd;color:#1565c0}
+.legal{background:#f5f5f5;color:#616161}
+.footer{margin-top:2rem;font-size:0.75rem;color:#999;text-align:center;border-top:1px solid #ddd;padding-top:1rem}
+@media print{body{padding:1rem}@page{margin:1cm}}
+</style></head><body>
+<h1>📰 Press Freedom Tracker — Incident Report</h1>
+<div class="meta">Generated ${new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'})} · ${filtered.length} incidents</div>
+${filterInfo.length ? '<div class="filters">Filters: ' + filterInfo.join(' · ') + '</div>' : ''}
+<table><thead><tr><th>Date</th><th>Country</th><th>Type</th><th>Incident</th><th>Details</th></tr></thead><tbody>
+${filtered.map(i => `<tr><td style="white-space:nowrap">${i.date}</td><td>${i.country}</td><td><span class="type-badge ${i.type}">${(typeEmoji[i.type]||'')} ${i.type}</span></td><td>${i.title}</td><td style="font-size:0.75rem;color:#555">${i.detail||''}</td></tr>`).join('')}
+</tbody></table>
+<div class="footer">Data compiled from RSF, CPJ, and public records. For informational and research purposes.</div>
+</body></html>`;
+
+  const win = window.open('','_blank');
+  win.document.write(printHTML);
+  win.document.close();
+  setTimeout(() => { win.print(); }, 500);
+});
 </script>
 </body>
 </html>
