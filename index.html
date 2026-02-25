@@ -142,8 +142,58 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2rem;text-align:center;
 </footer>
 
 <script>
-// ========== DATA ==========
-const incidents = [
+// ========== LIVE DATA LOADER ==========
+async function fetchJSON(url) {
+  try {
+    const r = await fetch(url, {cache:'no-cache'});
+    if (!r.ok) return null;
+    const d = await r.json();
+    return Array.isArray(d) && d.length > 0 ? d : null;
+  } catch(e) { return null; }
+}
+
+function normalizeCPJIncident(item, type) {
+  const typeMap = {imprisoned:'detention', killed:'killing'};
+  return {
+    date: item.date || item.cpj_date || '2026-01-01',
+    title: item.title || item.name || 'Unknown incident',
+    country: item.country || item.location || 'Unknown',
+    lat: parseFloat(item.lat) || 0,
+    lng: parseFloat(item.lng || item.lon) || 0,
+    type: typeMap[type] || 'detention',
+    detail: item.description || item.charges || item.circumstances || `${item.title || item.name} — ${item.country || ''}`
+  };
+}
+
+// Country centroids for CPJ data that may lack coords
+const countryCentroids = {
+  "China":[35.86,104.19],"Russia":[55.75,37.62],"Iran":[35.69,51.39],"Turkey":[39.93,32.86],
+  "Egypt":[30.04,31.24],"Saudi Arabia":[24.71,46.68],"Myanmar":[19.76,96.07],"Vietnam":[21.03,105.85],
+  "Belarus":[53.9,27.57],"Ethiopia":[9.02,38.75],"India":[28.61,77.21],"Mexico":[19.43,-99.13],
+  "Philippines":[14.6,120.98],"Bangladesh":[23.81,90.41],"Syria":[34.8,38.99],"Afghanistan":[34.53,69.17],
+  "Pakistan":[30.38,69.35],"Somalia":[2.05,45.32],"Nigeria":[9.08,7.49],"Cuba":[23.11,-82.37],
+  "Eritrea":[15.34,38.93],"North Korea":[39.04,125.76]
+};
+
+function fixCoords(inc) {
+  if (inc.lat === 0 && inc.lng === 0 && countryCentroids[inc.country]) {
+    inc.lat = countryCentroids[inc.country][0];
+    inc.lng = countryCentroids[inc.country][1];
+  }
+  return inc;
+}
+
+function normalizeRSFIndex(data) {
+  if (!data || !Array.isArray(data)) return null;
+  return data.map(c => ({
+    rank: c.rank || c.position || 0,
+    name: c.country || c.name || c.en_country || '',
+    score: parseFloat(c.score || c.global_score || 0)
+  })).filter(c => c.rank > 0 && c.name).sort((a,b) => a.rank - b.rank);
+}
+
+// ========== STATIC FALLBACK DATA ==========
+const staticIncidents = [
   {date:"2026-02-20",title:"Independent news site blocked across three provinces",country:"China",lat:35.86,lng:104.19,type:"censorship",detail:"Authorities ordered ISPs to block access to FactWire China in Guangdong, Fujian, and Zhejiang."},
   {date:"2026-02-18",title:"Two journalists detained covering protest in Minsk",country:"Belarus",lat:53.9,lng:27.57,type:"detention",detail:"BelaPAN reporters arrested while livestreaming anti-government demonstration."},
   {date:"2026-02-17",title:"Press accreditation revoked for foreign correspondents",country:"Russia",lat:55.75,lng:37.62,type:"censorship",detail:"Five western news bureau correspondents given 72 hours to leave the country."},
@@ -171,13 +221,13 @@ const incidents = [
   {date:"2026-01-05",title:"Investigative reporter charged with espionage",country:"Russia",lat:55.75,lng:37.62,type:"detention",detail:"Wall Street Journal stringer faces renewed espionage charges after appeal denied."}
 ];
 
-const detentionsByYear = [
+const staticDetentionsByYear = [
   {year:2015,count:199},{year:2016,count:259},{year:2017,count:262},{year:2018,count:348},
   {year:2019,count:389},{year:2020,count:387},{year:2021,count:488},{year:2022,count:533},
   {year:2023,count:521},{year:2024,count:510},{year:2025,count:498}
 ];
 
-const worstCountries = [
+const staticWorstCountries = [
   {rank:180,name:"Eritrea",score:13.81},{rank:179,name:"North Korea",score:14.20},
   {rank:178,name:"Afghanistan",score:17.84},{rank:177,name:"Iran",score:19.62},
   {rank:176,name:"Syria",score:20.15},{rank:175,name:"China",score:22.97},
@@ -190,7 +240,7 @@ const worstCountries = [
   {rank:162,name:"Somalia",score:30.72},{rank:161,name:"Djibouti",score:31.40}
 ];
 
-const bestCountries = [
+const staticBestCountries = [
   {rank:1,name:"Norway",score:95.18},{rank:2,name:"Denmark",score:92.65},
   {rank:3,name:"Sweden",score:91.58},{rank:4,name:"Netherlands",score:90.82},
   {rank:5,name:"Finland",score:90.25},{rank:6,name:"Ireland",score:89.91},
@@ -198,37 +248,38 @@ const bestCountries = [
   {rank:9,name:"Estonia",score:86.95},{rank:10,name:"New Zealand",score:86.42}
 ];
 
-// ========== RENDER ==========
-// Stats
-const totalDetained = incidents.filter(i=>i.type==='detention').length;
-const totalKilled = incidents.filter(i=>i.type==='killing').length;
-const totalShutdowns = incidents.filter(i=>i.type==='shutdown').length;
-const countriesAffected = [...new Set(incidents.map(i=>i.country))].length;
+// ========== ASYNC INIT ==========
+let incidents, detentionsByYear, worstCountries, bestCountries;
+let currentFilter = 'all';
+const typeColors = {detention:'#e63946',killing:'#ff4444',censorship:'#f4a261',shutdown:'#4361ee',legal:'#8888aa'};
 
-document.getElementById('statsBar').innerHTML = `
-  <div class="stat-card danger"><div class="number">${totalDetained}</div><div class="label">Journalists Detained</div></div>
-  <div class="stat-card warning"><div class="number">${totalKilled}</div><div class="label">Killed / Missing</div></div>
-  <div class="stat-card blue"><div class="number">${totalShutdowns}</div><div class="label">Outlet Shutdowns</div></div>
-  <div class="stat-card safe"><div class="number">${countriesAffected}</div><div class="label">Countries Affected</div></div>
-`;
-
-// Map
 const map = L.map('map',{zoomControl:false,attributionControl:false}).setView([25,20],2);
 L.control.zoom({position:'bottomleft'}).addTo(map);
 L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{maxZoom:18}).addTo(map);
 
-const typeColors = {detention:'#e63946',killing:'#ff4444',censorship:'#f4a261',shutdown:'#4361ee',legal:'#8888aa'};
-const markers = [];
+function flyTo(lat,lng){map.flyTo([lat,lng],5,{duration:1})}
 
-incidents.forEach(inc => {
-  const color = typeColors[inc.type]||'#888';
-  const marker = L.circleMarker([inc.lat,inc.lng],{radius:7,fillColor:color,color:'rgba(255,255,255,0.3)',weight:1,fillOpacity:0.85}).addTo(map);
-  marker.bindPopup(`<div style="font-family:Georgia;max-width:250px"><strong>${inc.title}</strong><br><small style="color:#666">${inc.country} — ${inc.date}</small><br><br>${inc.detail}</div>`);
-  markers.push({marker,incident:inc});
-});
+function renderStats(){
+  const totalDetained = incidents.filter(i=>i.type==='detention').length;
+  const totalKilled = incidents.filter(i=>i.type==='killing').length;
+  const totalShutdowns = incidents.filter(i=>i.type==='shutdown').length;
+  const countriesAffected = [...new Set(incidents.map(i=>i.country))].length;
+  document.getElementById('statsBar').innerHTML = `
+    <div class="stat-card danger"><div class="number">${totalDetained}</div><div class="label">Journalists Detained</div></div>
+    <div class="stat-card warning"><div class="number">${totalKilled}</div><div class="label">Killed / Missing</div></div>
+    <div class="stat-card blue"><div class="number">${totalShutdowns}</div><div class="label">Outlet Shutdowns</div></div>
+    <div class="stat-card safe"><div class="number">${countriesAffected}</div><div class="label">Countries Affected</div></div>
+  `;
+}
 
-// Incident list
-let currentFilter = 'all';
+function renderMap(){
+  incidents.forEach(inc => {
+    const color = typeColors[inc.type]||'#888';
+    const marker = L.circleMarker([inc.lat,inc.lng],{radius:7,fillColor:color,color:'rgba(255,255,255,0.3)',weight:1,fillOpacity:0.85}).addTo(map);
+    marker.bindPopup(`<div style="font-family:Georgia;max-width:250px"><strong>${inc.title}</strong><br><small style="color:#666">${inc.country} — ${inc.date}</small><br><br>${inc.detail}</div>`);
+  });
+}
+
 function renderIncidents(filter){
   currentFilter = filter;
   const filtered = filter==='all' ? incidents : incidents.filter(i=>i.type===filter);
@@ -244,27 +295,15 @@ function renderIncidents(filter){
     </div>
   `).join('');
 }
-renderIncidents('all');
 
-function flyTo(lat,lng){map.flyTo([lat,lng],5,{duration:1})}
+function renderYearChart(){
+  const maxCount = Math.max(...detentionsByYear.map(d=>d.count));
+  document.getElementById('yearChart').innerHTML = detentionsByYear.map(d => {
+    const h = (d.count/maxCount)*100;
+    return `<div class="year-bar" style="height:${h}%"><span class="year-label">${d.year}</span><span class="bar-value">${d.count}</span></div>`;
+  }).join('');
+}
 
-// Filter tabs
-document.querySelectorAll('.filter-tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.filter-tab').forEach(t=>t.classList.remove('active'));
-    tab.classList.add('active');
-    renderIncidents(tab.dataset.filter);
-  });
-});
-
-// Year chart
-const maxCount = Math.max(...detentionsByYear.map(d=>d.count));
-document.getElementById('yearChart').innerHTML = detentionsByYear.map(d => {
-  const h = (d.count/maxCount)*100;
-  return `<div class="year-bar" style="height:${h}%"><span class="year-label">${d.year}</span><span class="bar-value">${d.count}</span></div>`;
-}).join('');
-
-// Rankings
 function renderRankings(data, containerId, colorFn){
   document.getElementById(containerId).innerHTML = data.map(c => {
     const pct = c.score;
@@ -280,8 +319,74 @@ function renderRankings(data, containerId, colorFn){
   }).join('');
 }
 
-renderRankings(worstCountries,'worstRankings', s => s<20?'#e63946':s<25?'#f4a261':s<30?'#f4a261':'#e9c46a');
-renderRankings(bestCountries,'bestRankings', s => s>90?'#2a9d8f':s>87?'#52b788':'#76c893');
+document.querySelectorAll('.filter-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.filter-tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    renderIncidents(tab.dataset.filter);
+  });
+});
+
+async function loadLiveData(){
+  let liveSource = 'static';
+
+  // Try loading live CPJ data
+  const [cpjImprisoned, cpjKilled, rsfIndex, meta] = await Promise.all([
+    fetchJSON('data/cpj-imprisoned.json'),
+    fetchJSON('data/cpj-killed.json'),
+    fetchJSON('data/rsf-index.json'),
+    fetchJSON('data/meta.json')
+  ]);
+
+  // Build incidents from live CPJ data if available
+  if (cpjImprisoned || cpjKilled) {
+    const liveIncidents = [];
+    if (cpjImprisoned) cpjImprisoned.forEach(item => liveIncidents.push(fixCoords(normalizeCPJIncident(item, 'imprisoned'))));
+    if (cpjKilled) cpjKilled.forEach(item => liveIncidents.push(fixCoords(normalizeCPJIncident(item, 'killed'))));
+    if (liveIncidents.length > 0) {
+      // Merge: live data first, then static for types CPJ doesn't cover (censorship, shutdown, legal)
+      const liveTypes = new Set(liveIncidents.map(i=>i.type));
+      const staticExtras = staticIncidents.filter(i => !liveTypes.has(i.type));
+      incidents = [...liveIncidents, ...staticExtras].sort((a,b) => b.date.localeCompare(a.date));
+      liveSource = 'live';
+    } else {
+      incidents = staticIncidents;
+    }
+  } else {
+    incidents = staticIncidents;
+  }
+
+  // RSF index
+  const liveRSF = normalizeRSFIndex(rsfIndex);
+  if (liveRSF && liveRSF.length >= 20) {
+    worstCountries = liveRSF.slice(-20).reverse();
+    bestCountries = liveRSF.slice(0, 10);
+  } else {
+    worstCountries = staticWorstCountries;
+    bestCountries = staticBestCountries;
+  }
+
+  detentionsByYear = staticDetentionsByYear;
+
+  // Update header with data source indicator
+  const subtitleEl = document.querySelector('.subtitle');
+  if (liveSource === 'live' && meta && meta.updated) {
+    const updated = new Date(meta.updated).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'});
+    subtitleEl.innerHTML = `<span class="live-dot"></span>Live Data — Last updated ${updated} via CPJ/RSF`;
+  } else {
+    subtitleEl.innerHTML = `<span class="live-dot" style="background:var(--warning)"></span>Global Dashboard — Using cached data (live feed unavailable)`;
+  }
+
+  // Render everything
+  renderStats();
+  renderMap();
+  renderIncidents('all');
+  renderYearChart();
+  renderRankings(worstCountries,'worstRankings', s => s<20?'#e63946':s<25?'#f4a261':s<30?'#f4a261':'#e9c46a');
+  renderRankings(bestCountries,'bestRankings', s => s>90?'#2a9d8f':s>87?'#52b788':'#76c893');
+}
+
+loadLiveData();
 </script>
 </body>
 </html>

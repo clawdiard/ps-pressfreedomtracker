@@ -1,0 +1,36 @@
+name: Update Press Freedom Data
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch CPJ Data
+        run: |
+          mkdir -p data
+          # CPJ public data feed
+          curl -sL --max-time 30 "https://cpj.org/wp-json/cpj/v1/imprisoned" -o data/cpj-imprisoned.json 2>/dev/null || echo "[]" > data/cpj-imprisoned.json
+          curl -sL --max-time 30 "https://cpj.org/wp-json/cpj/v1/killed" -o data/cpj-killed.json 2>/dev/null || echo "[]" > data/cpj-killed.json
+
+      - name: Fetch RSF Index Data
+        run: |
+          curl -sL --max-time 30 "https://rsf.org/sites/default/files/index.json" -o data/rsf-index.json 2>/dev/null || echo "[]" > data/rsf-index.json
+
+      - name: Generate timestamp
+        run: echo "{\"updated\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}" > data/meta.json
+
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/
+          git diff --cached --quiet || git commit -m "chore: update press freedom data $(date -u +%Y-%m-%d)"
+          git push
