@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html lang="fr" dir="ltr" prefix="og: https://ogp.me/ns#">
 <head>
-          <script type="0e74eef689f48689f611b9a0-text/javascript">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+          <script type="cd98cff1c83a74cb876515a4-text/javascript">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     'https://www.googletagmanager.com/gtm.js?id='+i+dl+'';f.parentNode.insertBefore(j,f);
@@ -30,18 +30,18 @@
 <link rel="icon" type="image/png" sizes="96x96" href="/themes/custom/rsf/favicons/favicon-96x96.png" />
 <link rel="icon" type="image/png" sizes="16x16" href="/themes/custom/rsf/favicons/favicon-16x16.png" />
 <link rel="manifest" href="/themes/custom/rsf/favicons/manifest.json" />
-<meta name="Generator" content="Drupal 10 (https://www.drupal.org)" />
+<meta name="Generator" content="Drupal 11 (https://www.drupal.org)" />
 <meta name="MobileOptimized" content="width" />
 <meta name="HandheldFriendly" content="true" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <link rel="icon" href="/themes/custom/rsf/favicon.ico" type="image/vnd.microsoft.icon" />
 
     <title>La page que vous rechercher semble introuvable. | RSF</title>
-    <link rel="stylesheet" media="all" href="/sites/default/files/css/css_vcOdKSElDu-m7yIHmbLmW2kkxOe_Fhnl5DKzhMAL31A.css?delta=0&amp;language=fr&amp;theme=rsf&amp;include=eJwrKk7TT8_JT0rM0S0uqczJzEvXKa4sLknN1U9KLE4FALYEC74" />
+    <link rel="stylesheet" media="all" href="/sites/default/files/css/css_Ac2JsXb6zy0_plXLqHiKMnSqLKU_L1uQ5ax80rkLyLA.css?delta=0&amp;language=fr&amp;theme=rsf&amp;include=eJxLzi9K1U8pKi1IzNHLLEnN1c3JLC7RKSpO00_PyU9KzNEtLqnMycxL1ymuLAZK6yclFqcCABFoFBA" />
 <link rel="stylesheet" media="all" href="//use.typekit.net/zdt8pge.css" />
-<link rel="stylesheet" media="all" href="/sites/default/files/css/css_VtQYbDeAAorUdoaHdAfjMxP3p_feLrSP7pQH8vNg85Y.css?delta=2&amp;language=fr&amp;theme=rsf&amp;include=eJwrKk7TT8_JT0rM0S0uqczJzEvXKa4sLknN1U9KLE4FALYEC74" />
-<link rel="stylesheet" media="print" href="/sites/default/files/css/css_L7Ob5ElZCjG2WegSLVb_TZcBHAO1gcb1tgfMGx_wY5k.css?delta=3&amp;language=fr&amp;theme=rsf&amp;include=eJwrKk7TT8_JT0rM0S0uqczJzEvXKa4sLknN1U9KLE4FALYEC74" />
-<link rel="stylesheet" media="all" href="/sites/default/files/css/css_z9cdb4NaMuI0PCTvqZQFLy9YMHLS7G9RFAk_Uji_Y7g.css?delta=4&amp;language=fr&amp;theme=rsf&amp;include=eJwrKk7TT8_JT0rM0S0uqczJzEvXKa4sLknN1U9KLE4FALYEC74" />
+<link rel="stylesheet" media="all" href="/sites/default/files/css/css_VtQYbDeAAorUdoaHdAfjMxP3p_feLrSP7pQH8vNg85Y.css?delta=2&amp;language=fr&amp;theme=rsf&amp;include=eJxLzi9K1U8pKi1IzNHLLEnN1c3JLC7RKSpO00_PyU9KzNEtLqnMycxL1ymuLAZK6yclFqcCABFoFBA" />
+<link rel="stylesheet" media="print" href="/sites/default/files/css/css_L7Ob5ElZCjG2WegSLVb_TZcBHAO1gcb1tgfMGx_wY5k.css?delta=3&amp;language=fr&amp;theme=rsf&amp;include=eJxLzi9K1U8pKi1IzNHLLEnN1c3JLC7RKSpO00_PyU9KzNEtLqnMycxL1ymuLAZK6yclFqcCABFoFBA" />
+<link rel="stylesheet" media="all" href="/sites/default/files/css/css_aForFAl-g5906o_E-6LdJfqX5i10fH3c4OZ2PLTCIl0.css?delta=4&amp;language=fr&amp;theme=rsf&amp;include=eJxLzi9K1U8pKi1IzNHLLEnN1c3JLC7RKSpO00_PyU9KzNEtLqnMycxL1ymuLAZK6yclFqcCABFoFBA" />
 
       
         </head>
@@ -91,7 +91,7 @@
 </a>
   </div>
 
-        <div class="wrapper-don block block-rsf-common block-rsf-faire-don-block" id="block-rsffaireundonheadericon">
+        <div id="block-rsffaireundonheadericon" class="wrapper-don block block-rsf-common block-rsf-faire-don-block">
   
     
       <div><a href="https://donate.rsf.org/ab?cids[]=32&amp;cids[]=224&amp;lang=fr_FR&amp;reserved_origine=SPSWEB&amp;utm_source=site_rsf&amp;utm_medium=site&amp;utm_campaign=spontane&amp;utm_content=header">Faire un don</a></div>
@@ -173,7 +173,7 @@
 </li></ul></div></nav>
 
   </div>
-<div class="wrapper-don block block-rsf-common block-rsf-faire-don-block" id="block-rsffaireundon">
+<div id="block-rsffaireundon" class="wrapper-don block block-rsf-common block-rsf-faire-don-block">
   
     
       <div><a href="https://donate.rsf.org/ab?cids[]=32&amp;cids[]=224&amp;lang=fr_FR&amp;reserved_origine=SPSWEB&amp;utm_source=site_rsf&amp;utm_medium=site&amp;utm_campaign=spontane&amp;utm_content=header">Faire un don</a></div>
@@ -200,7 +200,7 @@
 <div class="language-switcher-language-url block block-language block-language-blocklanguage-interface" id="block-selecteurdelangue" role="navigation">
   
     
-      <ul class="links"><li hreflang="fr" data-drupal-link-system-path="page-404"><a href="/fr/page-404" class="language-link" hreflang="fr" data-drupal-link-system-path="page-404">Français</a></li><li hreflang="en" data-drupal-link-system-path="page-404"><a href="/en/page-404" class="language-link" hreflang="en" data-drupal-link-system-path="page-404">English</a></li><li hreflang="es" data-drupal-link-system-path="page-404"><a href="/es/page-404" class="language-link" hreflang="es" data-drupal-link-system-path="page-404">Español</a></li><li hreflang="pt-br" data-drupal-link-system-path="page-404"><a href="/pt-br/page-404" class="language-link" hreflang="pt-br" data-drupal-link-system-path="page-404">Portuguese</a></li><li hreflang="ar" data-drupal-link-system-path="page-404"><a href="/ar/page-404" class="language-link" hreflang="ar" data-drupal-link-system-path="page-404">العربية</a></li><li hreflang="fa" data-drupal-link-system-path="page-404"><a href="/fa/page-404" class="language-link" hreflang="fa" data-drupal-link-system-path="page-404">فارسی</a></li><li hreflang="zh-hans" data-drupal-link-system-path="page-404"><a href="/zh-hans/page-404" class="language-link" hreflang="zh-hans" data-drupal-link-system-path="page-404">简体中文</a></li><li hreflang="zh-hant" data-drupal-link-system-path="page-404"><a href="/zh-hant/page-404" class="language-link" hreflang="zh-hant" data-drupal-link-system-path="page-404">繁體中文</a></li></ul>
+      <ul class="links"><li data-drupal-language="fr" data-drupal-link-system-path="page-404"><a href="/fr/page-404" class="language-link" hreflang="fr" data-drupal-link-system-path="page-404">Français</a></li><li data-drupal-language="en" data-drupal-link-system-path="page-404"><a href="/en/page-404" class="language-link" hreflang="en" data-drupal-link-system-path="page-404">English</a></li><li data-drupal-language="es" data-drupal-link-system-path="page-404"><a href="/es/page-404" class="language-link" hreflang="es" data-drupal-link-system-path="page-404">Español</a></li><li data-drupal-language="pt-br" data-drupal-link-system-path="page-404"><a href="/pt-br/page-404" class="language-link" hreflang="pt-br" data-drupal-link-system-path="page-404">Portuguese</a></li><li data-drupal-language="ar" data-drupal-link-system-path="page-404"><a href="/ar/page-404" class="language-link" hreflang="ar" data-drupal-link-system-path="page-404">العربية</a></li><li data-drupal-language="fa" data-drupal-link-system-path="page-404"><a href="/fa/page-404" class="language-link" hreflang="fa" data-drupal-link-system-path="page-404">فارسی</a></li><li data-drupal-language="zh-hans" data-drupal-link-system-path="page-404"><a href="/zh-hans/page-404" class="language-link" hreflang="zh-hans" data-drupal-link-system-path="page-404">简体中文</a></li><li data-drupal-language="zh-hant" data-drupal-link-system-path="page-404"><a href="/zh-hant/page-404" class="language-link" hreflang="zh-hant" data-drupal-link-system-path="page-404">繁體中文</a></li></ul>
   </div>
 
   </div>
@@ -209,7 +209,7 @@
     </header>
   
     <div class="region region-alerte">
-    <div class="bandeaux block block-rsf-bandeau-alerte block-rsf-bandeau-alerte-bandeaux-block" id="block-rsf-bandeaux-alerte-block">
+    <div id="block-rsf-bandeaux-alerte-block" class="bandeaux block block-rsf-bandeau-alerte block-rsf-bandeau-alerte-bandeaux-block">
   
     
       <div><div data-bandeau-id="16" class="bandeau">
@@ -266,7 +266,7 @@
 </div>
 <p class="texte">Code error : 404.</p>
 <p class="texte-intro">Voici quelques liens utiles à la place :</p>
-<div class="item-list"><ul><li><a href="/fr" role="button" class="link link-cta">Accueil</a></li><li><a href="/fr/recherche" role="button" class="link link-cta">Recherche</a></li><li><a href="/fr/classement" role="button" class="link link-cta">Classement</a></li></ul></div></div>
+<div class="item-list"><ul><li><a href="/fr" class="link link-cta" role="button">Accueil</a></li><li><a href="/fr/recherche" class="link link-cta" role="button">Recherche</a></li><li><a href="/fr/classement" class="link link-cta" role="button">Classement</a></li></ul></div></div>
 
   </div>
 
@@ -276,7 +276,7 @@
   
       <div class="prefooter">
         <div class="region region-pre-footer">
-    <div class="wrapper-pre-footer-bloc block block-rsf-common block-rsf-pre-footer-block" id="block-rsfprefooterblock">
+    <div id="block-rsfprefooterblock" class="wrapper-pre-footer-bloc block block-rsf-common block-rsf-pre-footer-block">
   
     
       <div><div class="item-list"><ul><li><div class="element-bloc-lien">
@@ -286,7 +286,7 @@
       
             <div class="clearfix text-formatted field field--name-field-description field--type-text-long field--label-hidden field__item"><p>L&#039;action de Reporters sans frontières fonctionne grâce à vos dons. Nous avons besoin de vous pour continuer à veiller sur le respect de la liberté d’information et agir partout dans le monde.</p>
 </div>
-      <div class="wrapper-link"><a href="https://donate.rsf.org/ab?cids[]=32&amp;cids[]=224&amp;lang=fr_FR&amp;reserved_origine=SPSWEB&amp;utm_source=site_rsf&amp;utm_medium=site&amp;utm_campaign=spontane&amp;utm_content=pre-footer" role="button" class="wrapper-link cta-fort">Faire un don</a></div>
+      <div class="wrapper-link"><a href="https://donate.rsf.org/ab?cids[]=32&amp;cids[]=224&amp;lang=fr_FR&amp;reserved_origine=SPSWEB&amp;utm_source=site_rsf&amp;utm_medium=site&amp;utm_campaign=spontane&amp;utm_content=pre-footer" class="wrapper-link cta-fort" role="button">Faire un don</a></div>
 
   </div></div>
 </li><li><div class="element-bloc-lien">
@@ -296,7 +296,7 @@
       
             <div class="clearfix text-formatted field field--name-field-description field--type-text-long field--label-hidden field__item"><p>La liberté de l’information est un droit fondamental, pourtant près de la moitié de la population mondiale n’a pas accès à une information libre. Nous avons besoin de vous, adhérez à notre organisation !</p>
 </div>
-      <div class="wrapper-link"><a href="https://donate.rsf.org?cid=87&amp;lang=fr_FR" role="button" class="wrapper-link cta-moyen">Adhérer</a></div>
+      <div class="wrapper-link"><a href="https://donate.rsf.org?cid=87&amp;lang=fr_FR" class="wrapper-link cta-moyen" role="button">Adhérer</a></div>
 
   </div></div>
 </li><li><div class="element-bloc-lien">
@@ -306,7 +306,7 @@
       
             <div class="clearfix text-formatted field field--name-field-description field--type-text-long field--label-hidden field__item"><p>Achetez nos albums et soutenez concrètement nos actions : 100% des bénéfices sont reversés à Reporters sans frontières. Grâce à vous, nous restons indépendants.</p>
 </div>
-      <div class="wrapper-link"><a href="https://boutique.rsf.org/" role="button" class="wrapper-link lien-simple">Acheter</a></div>
+      <div class="wrapper-link"><a href="https://boutique.rsf.org/" class="wrapper-link lien-simple" role="button">Acheter</a></div>
 
   </div></div>
 </li></ul></div></div>
@@ -319,7 +319,7 @@
   
       <footer role="contentinfo">
         <div class="region region-footer">
-    <div class="wrapper-footer block block-rsf-common block-rsf-footer-block" id="block-rsffooterblock">
+    <div id="block-rsffooterblock" class="wrapper-footer block block-rsf-common block-rsf-footer-block">
   
     
       <div><div class="header-footer"><div class="wrapper-column column-1"><svg width="185" height="48" viewBox="0 0 185 48" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet">
@@ -375,10 +375,11 @@
 
 
   <button id="back-to-top" type="button" aria-label="Back to top" title="Back to top"></button>
-<script type="application/json" data-drupal-selector="drupal-settings-json">{"path":{"baseUrl":"\/","pathPrefix":"fr\/","currentPath":"","currentPathIsAdmin":false,"isFront":false,"currentLanguage":"fr"},"pluralDelimiter":"\u0003","suppressDeprecationErrors":true,"ajaxPageState":{"libraries":"eJwrKk7TT8_JT0rM0S0uqczJzEvXKa4sLknN1U9KLE4FALYEC74","theme":"rsf","theme_token":null},"ajaxTrustedUrl":{"\/fr\/recherche":true},"rsf_common":{"countries_list":{"AF":"Afghanistan","ZA":"Afrique du Sud","AL":"Albanie","DZ":"Alg\u00e9rie","DE":"Allemagne","AD":"Andorre","AO":"Angola","AI":"Anguilla","AQ":"Antarctique","AG":"Antigua \u0026 Barbuda","AN":"Antilles n\u00e9erlandaises","SA":"Arabie Saoudite","AR":"Argentine","AM":"Arm\u00e9nie","AW":"Aruba","AU":"Australie","AT":"Autriche","AZ":"Azerba\u00efdjan","BS":"Bahamas","BH":"Bahre\u00efn","BD":"Bangladesh","BB":"Barbade","BE":"Belgique","BZ":"Belize","BM":"Bermudes","BT":"Bhoutan","BY":"Bi\u00e9lorussie","BO":"Bolivie","BA":"Bosnie-Herz\u00e9govine","BW":"Botswana","BN":"Brunei","BR":"Br\u00e9sil","BG":"Bulgarie","BF":"Burkina Faso","BI":"Burundi","BJ":"B\u00e9nin","KH":"Cambodge","CM":"Cameroun","CA":"Canada","CV":"Cap-Vert","EA":"Ceuta \u0026 Melilla","CL":"Chili","CN":"Chine","CY":"Chypre","VA":"Cit\u00e9 du Vatican","CO":"Colombie","KM":"Comores","CG":"Congo - Brazzaville","CD":"Congo - Kinshasa","KP":"Cor\u00e9e du Nord","KR":"Cor\u00e9e du Sud","CR":"Costa Rica","HR":"Croatie","CU":"Cuba","CW":"Cura\u00e7ao","CI":"C\u00f4te d\u0027Ivoire","DK":"Danemark","DG":"Diego Garcia","DJ":"Djibouti","DM":"Dominique","ES":"Espagne","EE":"Estonie","SZ":"Eswatini","FJ":"Fidji","FI":"Finlande","FR":"France","GA":"Gabon","GM":"Gambie","GH":"Ghana","GI":"Gibraltar","GD":"Grenade","GL":"Groenland","GR":"Gr\u00e8ce","GP":"Guadeloupe","GU":"Guam","GT":"Guatemala","GG":"Guernesey","GN":"Guin\u00e9e","GW":"Guin\u00e9e-Bissau","GQ":"Guin\u00e9e \u00e9quatoriale","GY":"Guyana","GF":"Guyane fran\u00e7aise","GE":"G\u00e9orgie","GS":"G\u00e9orgie du Sud-et-les \u00eeles Sandwich du Sud","HT":"Ha\u00efti","HN":"Honduras","HK":"Hong Kong","HU":"Hongrie","IN":"Inde","ID":"Indon\u00e9sie","IQ":"Irak","IR":"Iran","IE":"Irlande","IS":"Islande","IL":"Isra\u00ebl","IT":"Italie","JM":"Jama\u00efque","JP":"Japon","JE":"Jersey","JO":"Jordanie","KZ":"Kazakhstan","KE":"Kenya","KG":"Kirghizistan","KI":"Kiribati","XK":"Kosovo","KW":"Kowe\u00eft","LA":"Laos","LS":"Lesotho","LV":"Lettonie","LB":"Liban","LR":"Lib\u00e9ria","LI":"Liechtenstein","LT":"Lituanie","LU":"Luxembourg","LY":"Lybie","MK":"Mac\u00e9doine du Nord","MG":"Madagascar","MY":"Malaisie","MW":"Malawi","MV":"Maldives","ML":"Mali","MT":"Malte","MA":"Maroc","MQ":"Martinique","MU":"Maurice","MR":"Mauritanie","YT":"Mayotte","MX":"Mexique","FM":"Micron\u00e9sie","MD":"Moldavie","MC":"Monaco","MN":"Mongolie","MS":"Montserrat","ME":"Mont\u00e9n\u00e9gro","MZ":"Mozambique","MM":"Myanmar (Birmanie)","NA":"Namibie","NR":"Nauru","NI":"Nicaragua","NE":"Niger","NG":"Nigeria","NU":"Niue","NO":"Norv\u00e8ge","NC":"Nouvelle-Cal\u00e9donie","NZ":"Nouvelle-Z\u00e9lande","NP":"N\u00e9pal","QO":"Oc\u00e9anie \u00e9loign\u00e9e","OM":"Oman","UG":"Ouganda","UZ":"Ouzb\u00e9kistan","PK":"Pakistan","PW":"Palaos","PA":"Panama","PG":"Papouasie-Nouvelle-Guin\u00e9e","PY":"Paraguay","NL":"Pays-Bas","BQ":"Pays-Bas carib\u00e9ens","PH":"Philippines","PL":"Pologne","PF":"Polyn\u00e9sie fran\u00e7aise","PR":"Porto Rico","PT":"Portugal","PE":"P\u00e9rou","QA":"Qatar","RO":"Roumanie","GB":"Royaume-Uni","RU":"Russie","RW":"Rwanda","MO":"R\u00e9gion administrative sp\u00e9ciale de Macao de la R\u00e9publique populaire de Chine","CF":"R\u00e9publique centrafricaine","DO":"R\u00e9publique dominicaine","RE":"R\u00e9union","EH":"Sahara occidental","KN":"Saint-Christophe-et-Ni\u00e9v\u00e8s","SM":"Saint-Marin","PM":"Saint-Pierre-et-Miquelon","VC":"Saint-Vincent-et-les-Grenadines","SH":"Sainte-H\u00e9l\u00e8ne","LC":"Sainte-Lucie","SV":"Salvador","WS":"Samoa","AS":"Samoa am\u00e9ricaines","ST":"Sao Tom\u00e9-et-Principe","RS":"Serbie","CQ":"Sercq","SC":"Seychelles","SL":"Sierra Leone","SG":"Singapour","SX":"Sint Maarten","SK":"Slovaquie","SI":"Slov\u00e9nie","SO":"Somalie","SD":"Soudan","SS":"Soudan du Sud","LK":"Sri Lanka","BL":"St. Barth\u00e9lemy","MF":"St. Martin","CH":"Suisse","SR":"Suriname","SE":"Su\u00e8de","SJ":"Svalbard et Jan Mayen","SY":"Syrie","SN":"S\u00e9n\u00e9gal","TJ":"Tadjikistan","TZ":"Tanzanie","TW":"Ta\u00efwan","TD":"Tchad","CZ":"Tch\u00e9quie","TF":"Terres australes fran\u00e7aises","IO":"Territoire britannique de l\u0027oc\u00e9an Indien","PS":"Territoires palestiniens","TH":"Tha\u00eflande","TL":"Timor oriental","TG":"Togo","TK":"Tokelau","TO":"Tonga","TT":"Trinit\u00e9-et-Tobago","TA":"Tristan da Cunha","TN":"Tunisie","TM":"Turkm\u00e9nistan","TR":"Turquie","TV":"Tuvalu","UA":"Ukraine","UY":"Uruguay","VU":"Vanuatu","VE":"Venezuela","VN":"Vietnam","WF":"Wallis-et-Futuna","YE":"Y\u00e9men","ZM":"Zambie","ZW":"Zimbabwe","EG":"\u00c9gypte","AE":"\u00c9mirats arabes unis","EC":"\u00c9quateur","ER":"\u00c9rythr\u00e9e","US":"\u00c9tats-Unis","ET":"\u00c9thiopie","BV":"\u00cele Bouvet","CX":"\u00cele Christmas","CP":"\u00cele de Clipperton","IM":"\u00cele de Man","NF":"\u00cele Norfolk","AX":"\u00celes Aland","IC":"\u00celes Canaries","KY":"\u00celes Ca\u00efmans","CC":"\u00celes Cocos (Keeling)","CK":"\u00celes Cook","FO":"\u00celes F\u00e9ro\u00e9","HM":"\u00celes Heard-et-MacDonald","FK":"\u00celes Malouines","MP":"\u00celes Mariannes du Nord","MH":"\u00celes Marshall","PN":"\u00celes Pitcairn","SB":"\u00celes Salomon","TC":"\u00celes Turques-et-Ca\u00efques","VI":"\u00celes Vierges am\u00e9ricaines","VG":"\u00celes Vierges britanniques","UM":"\u00celes \u00e9loign\u00e9es des \u00c9tats-Unis","AC":"\u00eele de l\u0027Ascension"}},"field_group":{"html_element":{"mode":"pre_footer","context":"view","settings":{"classes":"wrapper-content","show_empty_fields":false,"id":"","element":"div","show_label":false,"label_element":"h3","label_element_classes":"","attributes":"","effect":"none","speed":"fast"}}},"user":{"uid":0,"permissionsHash":"9068c8074a6bcb5f426914ca4603bd8f73bd19e001b6bea0ceca6a92591463f9"}}</script>
-<script src="/sites/default/files/js/js_lgyExmmO5wg9LreGbIANLA2hHMvMzAVZnhAvVQBYdig.js?scope=footer&amp;delta=0&amp;language=fr&amp;theme=rsf&amp;include=eJwrKk7TT8_JT0rM0S0uqczJzEsHAELIByM" type="0e74eef689f48689f611b9a0-text/javascript"></script>
-<script src="/themes/custom/rsf/assets/scripts/app.js?tp3smg" defer type="0e74eef689f48689f611b9a0-text/javascript"></script>
+<script type="application/json" data-drupal-selector="drupal-settings-json">{"path":{"baseUrl":"\/","pathPrefix":"fr\/","currentPath":"","currentPathIsAdmin":false,"isFront":false,"currentLanguage":"fr"},"pluralDelimiter":"\u0003","suppressDeprecationErrors":true,"ajaxPageState":{"libraries":"eJxLzi9K1U8pKi1IzNHLLEnN1c3JLC7RKSpO00_PyU9KzNEtLqnMycxL1ymuLAZK6yclFqcCABFoFBA","theme":"rsf","theme_token":null},"ajaxTrustedUrl":{"\/fr\/recherche":true},"rsf_common":{"countries_list":{"AF":"Afghanistan","ZA":"Afrique du Sud","AL":"Albanie","DZ":"Alg\u00e9rie","DE":"Allemagne","AD":"Andorre","AO":"Angola","AI":"Anguilla","AQ":"Antarctique","AG":"Antigua \u0026 Barbuda","AN":"Antilles n\u00e9erlandaises","SA":"Arabie Saoudite","AR":"Argentine","AM":"Arm\u00e9nie","AW":"Aruba","AU":"Australie","AT":"Autriche","AZ":"Azerba\u00efdjan","BS":"Bahamas","BH":"Bahre\u00efn","BD":"Bangladesh","BB":"Barbade","BE":"Belgique","BZ":"Belize","BM":"Bermudes","BT":"Bhoutan","BY":"Bi\u00e9lorussie","BO":"Bolivie","BA":"Bosnie-Herz\u00e9govine","BW":"Botswana","BN":"Brunei","BR":"Br\u00e9sil","BG":"Bulgarie","BF":"Burkina Faso","BI":"Burundi","BJ":"B\u00e9nin","KH":"Cambodge","CM":"Cameroun","CA":"Canada","CV":"Cap-Vert","EA":"Ceuta \u0026 Melilla","CL":"Chili","CN":"Chine","CY":"Chypre","VA":"Cit\u00e9 du Vatican","CO":"Colombie","KM":"Comores","CG":"Congo - Brazzaville","CD":"Congo - Kinshasa","KP":"Cor\u00e9e du Nord","KR":"Cor\u00e9e du Sud","CR":"Costa Rica","HR":"Croatie","CU":"Cuba","CW":"Cura\u00e7ao","CI":"C\u00f4te d\u0027Ivoire","DK":"Danemark","DG":"Diego Garcia","DJ":"Djibouti","DM":"Dominique","ES":"Espagne","EE":"Estonie","SZ":"Eswatini","FJ":"Fidji","FI":"Finlande","FR":"France","GA":"Gabon","GM":"Gambie","GH":"Ghana","GI":"Gibraltar","GD":"Grenade","GL":"Groenland","GR":"Gr\u00e8ce","GP":"Guadeloupe","GU":"Guam","GT":"Guatemala","GG":"Guernesey","GN":"Guin\u00e9e","GW":"Guin\u00e9e-Bissau","GQ":"Guin\u00e9e \u00e9quatoriale","GY":"Guyana","GF":"Guyane fran\u00e7aise","GE":"G\u00e9orgie","GS":"G\u00e9orgie du Sud-et-les \u00eeles Sandwich du Sud","HT":"Ha\u00efti","HN":"Honduras","HK":"Hong Kong","HU":"Hongrie","IN":"Inde","ID":"Indon\u00e9sie","IQ":"Irak","IR":"Iran","IE":"Irlande","IS":"Islande","IL":"Isra\u00ebl","IT":"Italie","JM":"Jama\u00efque","JP":"Japon","JE":"Jersey","JO":"Jordanie","KZ":"Kazakhstan","KE":"Kenya","KG":"Kirghizistan","KI":"Kiribati","XK":"Kosovo","KW":"Kowe\u00eft","LA":"Laos","LS":"Lesotho","LV":"Lettonie","LB":"Liban","LR":"Lib\u00e9ria","LI":"Liechtenstein","LT":"Lituanie","LU":"Luxembourg","LY":"Lybie","MK":"Mac\u00e9doine du Nord","MG":"Madagascar","MY":"Malaisie","MW":"Malawi","MV":"Maldives","ML":"Mali","MT":"Malte","MA":"Maroc","MQ":"Martinique","MU":"Maurice","MR":"Mauritanie","YT":"Mayotte","MX":"Mexique","FM":"Micron\u00e9sie","MD":"Moldavie","MC":"Monaco","MN":"Mongolie","MS":"Montserrat","ME":"Mont\u00e9n\u00e9gro","MZ":"Mozambique","MM":"Myanmar (Birmanie)","NA":"Namibie","NR":"Nauru","NI":"Nicaragua","NE":"Niger","NG":"Nigeria","NU":"Niue","NO":"Norv\u00e8ge","NC":"Nouvelle-Cal\u00e9donie","NZ":"Nouvelle-Z\u00e9lande","NP":"N\u00e9pal","QO":"Oc\u00e9anie \u00e9loign\u00e9e","OM":"Oman","UG":"Ouganda","UZ":"Ouzb\u00e9kistan","PK":"Pakistan","PW":"Palaos","PA":"Panama","PG":"Papouasie-Nouvelle-Guin\u00e9e","PY":"Paraguay","NL":"Pays-Bas","BQ":"Pays-Bas carib\u00e9ens","PH":"Philippines","PL":"Pologne","PF":"Polyn\u00e9sie fran\u00e7aise","PR":"Porto Rico","PT":"Portugal","PE":"P\u00e9rou","QA":"Qatar","RO":"Roumanie","GB":"Royaume-Uni","RU":"Russie","RW":"Rwanda","MO":"R\u00e9gion administrative sp\u00e9ciale de Macao de la R\u00e9publique populaire de Chine","CF":"R\u00e9publique centrafricaine","DO":"R\u00e9publique dominicaine","RE":"R\u00e9union","EH":"Sahara occidental","KN":"Saint-Christophe-et-Ni\u00e9v\u00e8s","SM":"Saint-Marin","PM":"Saint-Pierre-et-Miquelon","VC":"Saint-Vincent-et-les-Grenadines","SH":"Sainte-H\u00e9l\u00e8ne","LC":"Sainte-Lucie","SV":"Salvador","WS":"Samoa","AS":"Samoa am\u00e9ricaines","ST":"Sao Tom\u00e9-et-Principe","RS":"Serbie","CQ":"Sercq","SC":"Seychelles","SL":"Sierra Leone","SG":"Singapour","SX":"Sint Maarten","SK":"Slovaquie","SI":"Slov\u00e9nie","SO":"Somalie","SD":"Soudan","SS":"Soudan du Sud","LK":"Sri Lanka","BL":"St. Barth\u00e9lemy","MF":"St. Martin","CH":"Suisse","SR":"Suriname","SE":"Su\u00e8de","SJ":"Svalbard et Jan Mayen","SY":"Syrie","SN":"S\u00e9n\u00e9gal","TJ":"Tadjikistan","TZ":"Tanzanie","TW":"Ta\u00efwan","TD":"Tchad","CZ":"Tch\u00e9quie","TF":"Terres australes fran\u00e7aises","IO":"Territoire britannique de l\u0027oc\u00e9an Indien","PS":"Territoires palestiniens","TH":"Tha\u00eflande","TL":"Timor oriental","TG":"Togo","TK":"Tokelau","TO":"Tonga","TT":"Trinit\u00e9-et-Tobago","TA":"Tristan da Cunha","TN":"Tunisie","TM":"Turkm\u00e9nistan","TR":"Turquie","TV":"Tuvalu","UA":"Ukraine","UY":"Uruguay","VU":"Vanuatu","VE":"Venezuela","VN":"Vietnam","WF":"Wallis-et-Futuna","YE":"Y\u00e9men","ZM":"Zambie","ZW":"Zimbabwe","EG":"\u00c9gypte","AE":"\u00c9mirats arabes unis","EC":"\u00c9quateur","ER":"\u00c9rythr\u00e9e","US":"\u00c9tats-Unis","ET":"\u00c9thiopie","BV":"\u00cele Bouvet","CX":"\u00cele Christmas","CP":"\u00cele de Clipperton","IM":"\u00cele de Man","NF":"\u00cele Norfolk","AX":"\u00celes Aland","IC":"\u00celes Canaries","KY":"\u00celes Ca\u00efmans","CC":"\u00celes Cocos (Keeling)","CK":"\u00celes Cook","FO":"\u00celes F\u00e9ro\u00e9","HM":"\u00celes Heard-et-MacDonald","FK":"\u00celes Malouines","MP":"\u00celes Mariannes du Nord","MH":"\u00celes Marshall","PN":"\u00celes Pitcairn","SB":"\u00celes Salomon","TC":"\u00celes Turques-et-Ca\u00efques","VI":"\u00celes Vierges am\u00e9ricaines","VG":"\u00celes Vierges britanniques","UM":"\u00celes \u00e9loign\u00e9es des \u00c9tats-Unis","AC":"\u00eele de l\u0027Ascension"}},"field_group":{"html_element":{"mode":"pre_footer","context":"view","settings":{"classes":"wrapper-content","show_empty_fields":false,"id":"","element":"div","show_label":false,"label_element":"h3","label_element_classes":"","attributes":"","effect":"none","speed":"fast"}}},"user":{"uid":0,"permissionsHash":"9068c8074a6bcb5f426914ca4603bd8f73bd19e001b6bea0ceca6a92591463f9"}}</script>
+<script src="/core/assets/vendor/jquery/jquery.min.js?v=4.0.0" type="cd98cff1c83a74cb876515a4-text/javascript"></script>
+<script src="/sites/default/files/js/js_4PYoq_nZG-0eeNbsnQrROmR8vdSlESBesysSlQMYHe0.js?scope=footer&amp;delta=1&amp;language=fr&amp;theme=rsf&amp;include=eJwrKk7TT8_JT0rM0S0uqczJzEsHAELIByM" type="cd98cff1c83a74cb876515a4-text/javascript"></script>
+<script src="/themes/custom/rsf/assets/scripts/app.js?tp61za" defer type="cd98cff1c83a74cb876515a4-text/javascript"></script>
 
-  <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "cbbc4ffa9401415e8ce8562ef0f0f3bf"}' type="0e74eef689f48689f611b9a0-text/javascript"></script>
-<foreignObject><script src="/cdn-cgi/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js" data-cf-settings="0e74eef689f48689f611b9a0-|49" defer></script></foreignObject></body>
+  <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "cbbc4ffa9401415e8ce8562ef0f0f3bf"}' type="cd98cff1c83a74cb876515a4-text/javascript"></script>
+<foreignObject><script src="/cdn-cgi/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js" data-cf-settings="cd98cff1c83a74cb876515a4-|49" defer></script></foreignObject></body>
 </html>
